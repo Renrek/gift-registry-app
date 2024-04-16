@@ -12,8 +12,10 @@
         {% endblock %} 
     </head>
     <body>
-        {% block body %}
-        {% endblock %}
+        <div id="main-content">
+            {% block body %}
+            {% endblock %}
+        </div>
         {{loadScripts()}}
     </body>
 </html>

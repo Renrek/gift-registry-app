@@ -8,6 +8,7 @@
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
+    "useDefineForClassFields": true,
     "experimentalDecorators": true,
   },
   "exclude": [

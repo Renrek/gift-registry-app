@@ -92,5 +92,11 @@ module.exports = (env) => {
         resolve: {
             extensions: ['.tsx', '.ts', '.js', '.scss'],
         },
+        devServer:{
+            hot: true,
+            proxy: {
+                '*':'http://localhost:80'
+            }
+        }
     }
 }

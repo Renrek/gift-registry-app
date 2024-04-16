@@ -12,6 +12,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/icons-material": "^5.15.14",
+    "@mui/material": "^5.15.14",
+    "axios": "^1.6.8",
     "bootstrap": "^5.3.3",
     "mobx": "^6.12.1",
     "mobx-react": "^9.1.0",
