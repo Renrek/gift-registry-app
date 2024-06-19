@@ -15,9 +15,10 @@ class HomeController extends AbstractController
 
         $parameters = base64_encode(json_encode([1,2]));
         $securityContext = $this->container->get('security.authorization_checker');
-        //dd($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED'));
+        $isLoggedin = $securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED');
         return $this->render('home/index.html.twig', [ 
             'parameters' => $parameters,
+            'isLoggedin' => $isLoggedin,
         ]);
     }
 }

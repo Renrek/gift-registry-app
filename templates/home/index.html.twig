@@ -1,5 +1,7 @@
 {% extends "base.html.twig" %}
 {% block body %}
-    <div>Home Page</div>
-    {{loadComponent('login-form', [parameters])}}
+    <div style="padding:2em;">
+        <div>Home Page</div>
+        {{loadComponent('login-form', [isLoggedin])}}
+    </div>
 {% endblock body %}

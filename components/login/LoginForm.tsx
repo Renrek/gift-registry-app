@@ -9,7 +9,9 @@ import { action, makeObservable, observable } from 'mobx';
 import axios from 'axios';
 
 registerComponent('login-form', (element, parameters) => {
-    const controller = new LoginController();
+    const [ loggedIn ] = parameters;
+    
+    const controller = new LoginController(loggedIn);
     ReactDOMClient.createRoot(element).render(<LoginForm controller={controller} />)
 });
 
@@ -21,7 +23,14 @@ class LoginController {
 
     @observable public showPassword: boolean = false;
 
-    constructor() {
+    @observable public isLoggedin: boolean = false;
+
+    constructor(isLoggedin: boolean) {
+        console.log('in constructor',window.localStorage.getItem('XSRF-TOKEN'));
+        
+        this.isLoggedin = isLoggedin;
+        console.log(this.isLoggedin);
+        
         makeObservable(this);
     }
 
@@ -103,7 +112,7 @@ const LoginForm : React.FC<{controller: LoginController}> = observer(({controlle
             variant='contained'
             onClick={() => controller.submit()}
         >
-            Create Account
+            Login
         </Button>
     </Box>);
 });

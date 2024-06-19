@@ -1,3 +1,4 @@
+import "./axios.loader";
 import "./component.loader";
 import "./main.scss";
 import "./login/LoginForm";
