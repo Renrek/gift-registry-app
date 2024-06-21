@@ -1,5 +1,6 @@
-import "./axios.loader";
+//import "./axios.loader";
 import "./component.loader";
 import "./main.scss";
-import "./login/LoginForm";
-import "./registration/RegistrationForm";
+import "./Login/LoginForm";
+import "./Registration/RegistrationForm";
+import "./GiftRegistration/GiftRegistrationForm";

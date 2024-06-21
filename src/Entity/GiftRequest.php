@@ -5,8 +5,10 @@ namespace App\Entity;
 use App\Repository\GiftRequestRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 
 #[ORM\Entity(repositoryClass: GiftRequestRepository::class)]
+#[HasLifecycleCallbacks]
 class GiftRequest
 {
     #[ORM\Id]
@@ -67,6 +69,13 @@ class GiftRequest
         return $this->createdOn;
     }
 
+    #[ORM\PrePersist]
+    public function setCreatedOnValue(): void
+    {
+        $this->createdOn = new \DateTimeImmutable();
+        $this->setUpdatedOnValue();
+    }
+
     public function setCreatedOn(\DateTimeImmutable $createdOn): static
     {
         $this->createdOn = $createdOn;
@@ -77,6 +86,12 @@ class GiftRequest
     public function getUpdatedOn(): ?\DateTimeImmutable
     {
         return $this->updatedOn;
+    }
+
+    #[ORM\PreUpdate]
+    public function setUpdatedOnValue(): void
+    {
+        $this->updatedOn = new \DateTimeImmutable();
     }
 
     public function setUpdatedOn(\DateTimeImmutable $updatedOn): static

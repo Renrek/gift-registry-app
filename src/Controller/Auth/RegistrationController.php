@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Controller\Auth;
 
-use App\Dto\Formatter\UserRegistrationFormatter;
+use App\Controller\Auth\DTOs\UserRegistrationFormatter;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

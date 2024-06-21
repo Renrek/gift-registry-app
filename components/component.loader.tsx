@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (componentCallback) {
             componentCallback(element as HTMLElement, parameters as any);
         } else {
-            console.log('Unknown component request' + component);
+            console.log('Unknown component request: ' + component);
         }
 
         element.classList.remove('react-component');
