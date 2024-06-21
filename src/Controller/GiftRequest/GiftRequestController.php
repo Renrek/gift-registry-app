@@ -40,6 +40,11 @@ class GiftRequestController extends AbstractController
         $newGiftRequest = new GiftRequest();
         $newGiftRequest->setName($giftData->name);
         $newGiftRequest->setDescription($giftData->description);
+        $newGiftRequest->setOwner($user);
+        $newGiftRequest->setFulfilled(false);
+
+        $entityManager->persist($newGiftRequest);
+        $entityManager->flush();
 
         return $this->json(['message' => 'Added Gift Request'], Response::HTTP_CREATED);
     }
