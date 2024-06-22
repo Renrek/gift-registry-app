@@ -41,7 +41,7 @@ class GiftRegistrationController {
 const GiftRegistrationForm : React.FC<{
     controller: GiftRegistrationController
 }> = observer(({controller}) => {
-    return <Box>
+    return <Box style={{display:'flex', flexDirection:'column', gap:'1em'}}>
         <FormControl>
             <InputLabel htmlFor="name">Name</InputLabel>
             <Input
@@ -62,7 +62,7 @@ const GiftRegistrationForm : React.FC<{
             variant='contained'
             onClick={() => controller.submit()}
         >
-            Login
+            Add Gift Request
         </Button>
     </Box>;
 });
