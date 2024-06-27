@@ -13,6 +13,7 @@
     </head>
     <body>
         <div id="main-content">
+            {{loadComponent('main-navigation', [is_granted("IS_AUTHENTICATED")])}}
             {% block body %}
             {% endblock %}
         </div>

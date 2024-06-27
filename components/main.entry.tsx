@@ -5,3 +5,4 @@ import "./Login/LoginForm";
 import "./Registration/RegistrationForm";
 import "./GiftRegistration/GiftRegistrationForm";
 import "./GiftRequestList/GiftRequestList";
+import "./MainNavigation/MainNavigation";

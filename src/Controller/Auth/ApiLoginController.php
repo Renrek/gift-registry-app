@@ -5,6 +5,7 @@ namespace App\Controller\Auth;
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
@@ -26,4 +27,11 @@ class ApiLoginController extends AbstractController
             //'token' => $token,
         ]);
     }
+
+    // #[Route('/api/logout', name: 'app_logout')]
+    // public function handleLogout(Security $security): Response
+    // {
+    //     $response = $security->logout();
+    //     return $this->redirect('/');
+    // }
 }
