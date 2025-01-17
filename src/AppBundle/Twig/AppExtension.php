@@ -41,7 +41,7 @@ class AppExtension extends AbstractExtension
     public function loadComponent(
         string $componentName, 
         array $data = []
-    ) : string {
+    ) : Markup {
         
         $parameters = base64_encode(json_encode($data));
 
@@ -51,7 +51,7 @@ class AppExtension extends AbstractExtension
             .$parameters.'"></div>', 'UTF-8');
     }
 
-    public function loadStyles() : string
+    public function loadStyles() : Markup
     {
         $styles= '';
         $files = scandir($this->projectDirectory.'/public/assets');
@@ -63,7 +63,7 @@ class AppExtension extends AbstractExtension
         return new Markup($styles, 'UTF-8');
     }
 
-    public function loadScripts() : string
+    public function loadScripts() : Markup
     {
         $scripts = '';
         $files = scandir($this->projectDirectory.'/public/assets');

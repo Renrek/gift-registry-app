@@ -2,6 +2,9 @@
 {% block body %}
     <div style="padding:2em;">
         <div>Home Page</div>
-        {{loadComponent('login-form', [isLoggedin])}}
+        {% if isLoggedin == false %}
+            {{loadComponent('login-form', [isLoggedin])}}
+        {else}
+        {% endif %}
     </div>
 {% endblock body %}

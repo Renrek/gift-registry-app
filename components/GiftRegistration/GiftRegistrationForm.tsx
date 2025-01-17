@@ -34,7 +34,11 @@ class GiftRegistrationController {
         axios.post('/gift-request/add', {
             name: this.name,
             description: this.description,
-        }).then((res) => console.log(res));
+        }).then((res) => {
+            console.log(res);
+            
+            window.location.reload();
+        });
     }
 }
 
