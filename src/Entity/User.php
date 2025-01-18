@@ -36,9 +36,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: GiftRequest::class, mappedBy: 'owner', orphanRemoval: true)]
     private Collection $giftRequests;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Connection::class, cascade: ['persist', 'remove'])]
+    private Collection $connectionsInitiated;
+
+    #[ORM\OneToMany(mappedBy: 'connectedUser', targetEntity: Connection::class, cascade: ['persist', 'remove'])]
+    private Collection $connectionsReceived;
+
     public function __construct()
     {
         $this->giftRequests = new ArrayCollection();
+        $this->connectionsInitiated = new ArrayCollection();
+        $this->connectionsReceived = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -144,5 +152,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function getConnectionsInitiated(): Collection
+    {
+        return $this->connectionsInitiated;
+    }
+
+    public function getConnectionsReceived(): Collection
+    {
+        return $this->connectionsReceived;
     }
 }
