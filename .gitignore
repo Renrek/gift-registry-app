@@ -11,3 +11,4 @@
 ###< symfony/framework-bundle ###
 
 .DS_Store
+public/assets/main.js

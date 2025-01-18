@@ -54,9 +54,10 @@ class LoginController {
         axios.post('/api/login', {
             username: this.email,
             password: this.password
-        }).then((res) => 
-            window.open("/gift-request", "_self"
-        ));
+        }).then((res) => {
+            // window.open("/gift-request", "_self");
+            window.location.reload();
+        });
     }
 
 }

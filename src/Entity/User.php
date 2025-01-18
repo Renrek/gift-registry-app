@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -32,6 +32,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    private ?User $invitedBy = null;
 
     #[ORM\OneToMany(targetEntity: GiftRequest::class, mappedBy: 'owner', orphanRemoval: true)]
     private Collection $giftRequests;
@@ -162,5 +165,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getConnectionsReceived(): Collection
     {
         return $this->connectionsReceived;
+    }
+
+    public function getInvitedBy(): ?User
+    {
+        return $this->invitedBy;
+    }
+
+    public function setInvitedBy(?User $invitedBy): self
+    {
+        $this->invitedBy = $invitedBy;
+        return $this;
     }
 }

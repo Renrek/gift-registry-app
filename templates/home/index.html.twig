@@ -1,10 +1,11 @@
 {% extends "base.html.twig" %}
 {% block body %}
     <div style="padding:2em;">
-        <div>Home Page</div>
+        <h2>Home Page</h2>
         {% if isLoggedin == false %}
             {{loadComponent('login-form', [isLoggedin])}}
-        {else}
+        {% else %}
+            <p>Loaded in</p>
         {% endif %}
     </div>
 {% endblock body %}
