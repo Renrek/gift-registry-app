@@ -10,7 +10,7 @@ class UuidService
         
     }
 
-    function generateV4UUID(): string
+    public function generateV4UUID(): string
     {
         $data = random_bytes(16);
         $data[6] = chr((ord($data[6]) & 0x0f) | 0x40); // set version to 0100
@@ -19,10 +19,10 @@ class UuidService
         return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
 
-    function generateV1UUID(): string
+    public function generateV1UUID(): string
     {
         $time = microtime(true) * 10000000 + 0x01B21DD213814000;
-        $timeHex = str_pad(dechex($time), 16, '0', STR_PAD_LEFT);
+        $timeHex = str_pad(dechex((int) $time), 16, '0', STR_PAD_LEFT);
 
         $clockSeq = random_int(0, 0x3FFF);
         $node = bin2hex(random_bytes(6));

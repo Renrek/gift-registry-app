@@ -6,3 +6,4 @@ import "./Registration/RegistrationForm";
 import "./GiftRegistration/GiftRegistrationForm";
 import "./GiftRequestList/GiftRequestList";
 import "./MainNavigation/MainNavigation";
+import "./InviteDialog/InviteDialog";
