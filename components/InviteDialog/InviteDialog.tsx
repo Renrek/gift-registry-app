@@ -35,8 +35,6 @@ class InviteController {
         axios.post('/invitation/create', {
             email: this.email
         }).then((res) => {
-            // window.open("/gift-request", "_self");
-            //window.location.reload();
             this.toggleDialog();
         });
     }
@@ -44,29 +42,14 @@ class InviteController {
 
 const InviteDialog : React.FC<{controller: InviteController}> = observer(({controller}) => {
 
-    return <React.Fragment>
+  return <React.Fragment>
     <Button variant="contained" onClick={controller.toggleDialog}>
         Create Invitation
     </Button>
     <Dialog
         open={controller.isOpen}
         onClose={controller.toggleDialog}
-        PaperProps={{
-            component: 'div',
-            // onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-            //     event.preventDefault();
-            //     const formData = new FormData(event.currentTarget);
-            //     const formJson = Object.fromEntries((formData as any).entries());
-            //     const email = formJson.email;
-            //     axios.post('/invitation/create', {
-            //         username: email
-            //     }).then((res) => {
-            //         // window.open("/gift-request", "_self");
-            //         //window.location.reload();
-            //         controller.toggleDialog();
-            //     });
-            // },
-      }}
+        PaperProps={{component: 'div'}}
     >
       <DialogTitle>Subscribe</DialogTitle>
       <DialogContent>
