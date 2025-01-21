@@ -13,7 +13,8 @@ class UserRegistrationFormatter
         
         return new UserRegistrationRequestDTO(
             email: $payload->email,
-            password: $payload->password
+            password: $payload->password,
+            invitationCode: $payload->invitationCode,
         );
     }
 }

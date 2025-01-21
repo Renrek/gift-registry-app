@@ -3,6 +3,7 @@
 namespace App\Controller\Auth;
 
 use App\Controller\Auth\DTOs\UserRegistrationFormatter;
+use App\Entity\Connection;
 use App\Entity\Invitation;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,17 +13,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
-
+#[Route(path: '/registration', methods: 'GET')]
 class RegistrationController extends AbstractController
 {
-    #[Route(path: '/registration', methods: 'GET')]
+    #[Route(path: '', methods: 'GET')]
     public function index(): Response
     {
         return $this->render('registration/index.html.twig', []);
     }
 
 
-    #[Route(path: '/register', methods: 'POST')]
+    #[Route(path: '/create', methods: 'POST')]
     public function handleRegistration(
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
@@ -30,7 +31,7 @@ class RegistrationController extends AbstractController
         UserRegistrationFormatter $registrationFormatter,
     ): Response {
         $userData = $registrationFormatter->fromRequest($request);
-        $invitationCode = $request->request->get('invitation_code');
+        $invitationCode = $userData->invitationCode;
         if (!$userData->email || !$userData->password  || !$invitationCode) {
             return new Response('Not enough information', Response::HTTP_BAD_REQUEST);
         }
@@ -48,6 +49,8 @@ class RegistrationController extends AbstractController
         );
         $user->setPassword($hashedPassword);
         $user->setInvitedBy($invitation->getInviter());
+
+
         $entityManager->persist($user);
         $entityManager->flush();
         
@@ -55,6 +58,14 @@ class RegistrationController extends AbstractController
         $entityManager->persist($invitation);
 
         $entityManager->flush();
+
+        $connection = new Connection();
+        $connection->setUser($invitation->getInviter());
+        $connection->setConnectedUser($user);
+        $connection->setConfirmed(true);
+
+    $entityManager->persist($connection);
+    $entityManager->flush();
 
         return new Response('User registered successfully', Response::HTTP_CREATED);
     }

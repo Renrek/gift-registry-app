@@ -5,7 +5,7 @@
         {% if isLoggedin == false %}
             {{loadComponent('login-form', [isLoggedin])}}
         {% else %}
-            {{loadComponent('invitation-dialog-button', [])}}
+            Logged In
         {% endif %}
     </div>
 {% endblock body %}

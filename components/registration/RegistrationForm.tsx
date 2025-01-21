@@ -19,6 +19,8 @@ class RegistrationController {
 
     @observable public emailConfirm: string = '';
 
+    @observable public inviteCode: string = '';
+
     @observable public password: string = '';
 
     @observable public passwordConfirm: string = '';
@@ -44,6 +46,11 @@ class RegistrationController {
     }
 
     @action
+    public updateInviteCode = (code : string): void => {
+        this.inviteCode = code;
+    }
+
+    @action
     public updatePassword = (password : string): void => {
         this.password = password;
     }
@@ -64,10 +71,13 @@ class RegistrationController {
     }
 
     public submitNewUser = () => {
-        axios.post('/registration', {
+        axios.post('/registration/create', {
             email: this.email,
             password: this.password,
-        }).then((res) => console.log(res));
+            invitationCode: this.inviteCode
+        }).then((res) => {
+            window.open("/", "_self");
+        });
     }
     
 }
@@ -99,6 +109,14 @@ const RegistrationForm: React.FC<{controller: RegistrationController}> = observe
                 type="email"
                 value={controller.emailConfirm} 
                 onChange={(e) => controller.updateEmailConfirm(e.target.value)}
+            />
+        </FormControl>
+        <FormControl>
+            <InputLabel htmlFor="invite-code">Invite Code</InputLabel>
+            <Input 
+                id="invite-code" 
+                value={controller.inviteCode} 
+                onChange={(e) => controller.updateInviteCode(e.target.value)}
             />
         </FormControl>
         <FormControl>

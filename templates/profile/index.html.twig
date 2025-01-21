@@ -1,0 +1,7 @@
+{% extends "base.html.twig" %}
+{% block body %}
+    <div style="padding:2em;">
+        <h2>Profile</h2>
+        {{loadComponent('invitation-panel', [invitationList])}}
+    </div>
+{% endblock body %}

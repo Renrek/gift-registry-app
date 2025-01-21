@@ -1,46 +1,40 @@
 import * as React from 'react';
-import * as ReactDOMClient from 'react-dom/client';
-import { registerComponent } from '../component.loader';
 import { action, makeObservable, observable } from 'mobx';
 import { observer } from 'mobx-react';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
 import axios from 'axios';
 
-registerComponent('invitation-dialog-button', (element, parameters) => {   
-    const controller = new InviteController();
-    ReactDOMClient.createRoot(element).render(<InviteDialog controller={controller} />)
-});
 
-class InviteController {
+export class InviteDialogController {
 
     @observable public email: string = '';
     @observable public isOpen: boolean = false;
 
     constructor() {
-        makeObservable(this);
+      makeObservable(this);
     }
 
     @action
     public updateEmail = (email : string): void => {
-        this.email = email;
+      this.email = email;
     }
 
     @action
     public toggleDialog = (): void => {
-        this.isOpen = !this.isOpen;
+      this.isOpen = !this.isOpen;
     }
 
     @action
     public submit = (): void => {
         axios.post('/invitation/create', {
-            email: this.email
+          email: this.email
         }).then((res) => {
-            this.toggleDialog();
+          this.toggleDialog();
         });
     }
 }
 
-const InviteDialog : React.FC<{controller: InviteController}> = observer(({controller}) => {
+export const InviteDialog : React.FC<{controller: InviteDialogController}> = observer(({controller}) => {
 
   return <React.Fragment>
     <Button variant="contained" onClick={controller.toggleDialog}>
@@ -51,7 +45,7 @@ const InviteDialog : React.FC<{controller: InviteController}> = observer(({contr
         onClose={controller.toggleDialog}
         PaperProps={{component: 'div'}}
     >
-      <DialogTitle>Subscribe</DialogTitle>
+      <DialogTitle>Create Invitation</DialogTitle>
       <DialogContent>
         <DialogContentText>
           To invite someone to this website, please enter their address here.
