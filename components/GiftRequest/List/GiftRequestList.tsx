@@ -1,6 +1,6 @@
 import React from "react";
 import * as ReactDOMClient from 'react-dom/client';
-import { registerComponent } from "../component.loader";
+import { registerComponent } from "../../component.loader";
 import { observer } from "mobx-react";
 import { makeObservable } from "mobx";
 import { Box, Button, Card, CardActions, CardContent, Typography } from "@mui/material";
@@ -13,11 +13,11 @@ type GiftRequest = {
 
 registerComponent('gift-request-list', (element, parameters) => {
     const [giftRequests] = parameters;
-    const controller = new GiftRequestController(giftRequests);
+    const controller = new GiftRequestListController(giftRequests);
     ReactDOMClient.createRoot(element).render(<GiftRequestList controller={controller}/>);
 });
 
-class GiftRequestController {
+class GiftRequestListController {
 
     constructor(public readonly giftRequests: Array<GiftRequest>)
     {
@@ -26,7 +26,7 @@ class GiftRequestController {
 }
 
 const GiftRequestList : React.FC<{
-    controller: GiftRequestController
+    controller: GiftRequestListController
 }> = observer(({controller}) => {
     return <Box 
         sx={{
@@ -48,7 +48,7 @@ const GiftRequestList : React.FC<{
 
 const GiftRequestCard : React.FC<{
     giftRequest: GiftRequest,
-    controller: GiftRequestController
+    controller: GiftRequestListController
 }> = observer(({giftRequest, controller}) => {
     return <Card
         variant="outlined"

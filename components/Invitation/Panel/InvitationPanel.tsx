@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
-import { registerComponent } from '../component.loader';
+import { registerComponent } from '../../component.loader';
 import { observer } from "mobx-react";
-import { InviteDialogController, InviteDialog } from '../InviteDialog/InviteDialog';
+import { InvitationDialogController, InviteDialog } from '../Dialog/InvitationDialog';
 import { makeObservable, observable } from 'mobx';
 
 registerComponent('invitation-panel', (element, parameters) => { 
@@ -26,6 +26,6 @@ const InvitationPanel: React.FC<{controller: InvitationPanelController}> = obser
         {controller.invitationList.map((invitation: any) => (
             <div key={invitation.id}>{invitation.email} - { invitation.isUsed ? 'Consumed' : 'Active'} - {invitation.code}</div>
         ))}
-        <InviteDialog controller={new InviteDialogController()} />
+        <InviteDialog controller={new InvitationDialogController()} />
     </>
 });

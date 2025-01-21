@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
-import './LoginForm.scss';
+import './AuthLoginForm.scss';
 import { observer } from 'mobx-react';
-import { registerComponent } from '../component.loader';
+import { registerComponent } from '../../../component.loader';
 import { Box, Button, FormControl, IconButton, Input, InputAdornment, InputLabel } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { action, makeObservable, observable } from 'mobx';
@@ -11,11 +11,11 @@ import axios from 'axios';
 registerComponent('login-form', (element, parameters) => {
     const [ loggedIn ] = parameters;
     
-    const controller = new LoginController(loggedIn);
-    ReactDOMClient.createRoot(element).render(<LoginForm controller={controller} />)
+    const controller = new AuthLoginFormController(loggedIn);
+    ReactDOMClient.createRoot(element).render(<AuthLoginForm controller={controller} />)
 });
 
-class LoginController {
+class AuthLoginFormController {
 
     @observable public email: string = '';
 
@@ -62,7 +62,7 @@ class LoginController {
 
 }
 
-const LoginForm : React.FC<{controller: LoginController}> = observer(({controller}) => {
+const AuthLoginForm : React.FC<{controller: AuthLoginFormController}> = observer(({controller}) => {
     return (<Box
         component="form"
         autoComplete="off"

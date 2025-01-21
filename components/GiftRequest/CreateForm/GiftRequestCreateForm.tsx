@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
-import { registerComponent } from '../component.loader';
+import { registerComponent } from '../../component.loader';
 import { observer } from 'mobx-react';
 import { Box, Button, FormControl, Input, InputLabel } from '@mui/material';
 import { action, observable } from 'mobx';

@@ -1,9 +1,9 @@
 //import "./axios.loader";
 import "./component.loader";
 import "./main.scss";
-import "./Login/LoginForm";
-import "./Registration/RegistrationForm";
-import "./GiftRegistration/GiftRegistrationForm";
-import "./GiftRequestList/GiftRequestList";
-import "./MainNavigation/MainNavigation";
-import "./InvitationPanel/InvitationPanel";
+import "./Auth/Login/Form/AuthLoginForm";
+import "./Auth/Registration/Form/AuthRegistrationForm";
+import "./GiftRequest/CreateForm/GiftRequestCreateForm";
+import "./GiftRequest/List/GiftRequestList";
+import "./Navigation/Main/NavigationMain";
+import "./Invitation/Panel/InvitationPanel";

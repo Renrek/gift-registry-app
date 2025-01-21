@@ -3,18 +3,18 @@ import { makeObservable, observable } from 'mobx';
 import { observer } from 'mobx-react';
 import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
-import { registerComponent } from '../component.loader';
+import { registerComponent } from '../../component.loader';
 import axios from 'axios';
 
 registerComponent('main-navigation', (element, parameters) => {
     const [ isLoggedin ] = parameters;
-    const controller = new MainNavigationController(isLoggedin);
+    const controller = new NavigationMainController(isLoggedin);
     ReactDOMClient.createRoot(element).render(
-        <MainNavigation controller={controller} />
+        <NavigationMain controller={controller} />
     );
 });
 
-class MainNavigationController {
+class NavigationMainController {
 
     constructor(
         public readonly isLoggedIn: boolean,
@@ -24,10 +24,8 @@ class MainNavigationController {
 
 }
 
-
-
-const MainNavigation : React.FC<{
-    controller: MainNavigationController
+const NavigationMain : React.FC<{
+    controller: NavigationMainController
 }> = observer(({controller}) => {
     const handleLogOut = () => {
         window.open("/logout", "_self")
@@ -44,10 +42,16 @@ const MainNavigation : React.FC<{
             >
             Gift Registry App
             </Typography>
-            {controller.isLoggedIn && <Button 
-                color="inherit"
-                onClick={handleLogOut}
-            >Logout</Button> }
+            <div>
+                {controller.isLoggedIn && <Button 
+                    color="inherit"
+                    href="/profile"
+                >Home</Button>}
+                {controller.isLoggedIn && <Button 
+                    color="inherit"
+                    onClick={handleLogOut}
+                >Logout</Button> }
+            </div>
         </Toolbar>
     </AppBar>;
 });

@@ -5,7 +5,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import axios from 'axios';
 
 
-export class InviteDialogController {
+export class InvitationDialogController {
 
     @observable public email: string = '';
     @observable public isOpen: boolean = false;
@@ -34,7 +34,7 @@ export class InviteDialogController {
     }
 }
 
-export const InviteDialog : React.FC<{controller: InviteDialogController}> = observer(({controller}) => {
+export const InviteDialog : React.FC<{controller: InvitationDialogController}> = observer(({controller}) => {
 
   return <React.Fragment>
     <Button variant="contained" onClick={controller.toggleDialog}>

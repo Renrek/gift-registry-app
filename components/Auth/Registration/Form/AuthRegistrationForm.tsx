@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
-import { registerComponent } from "../component.loader";
+import { registerComponent } from "../../../component.loader";
 import { observer } from 'mobx-react';
 import { Box, Button, FormControl, FormHelperText, IconButton, Input, InputAdornment, InputLabel } from '@mui/material';
 import { action, makeObservable, observable } from 'mobx';
@@ -9,11 +9,11 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import axios from 'axios';
 
 registerComponent('registration-form', (element, parameters) => {
-    const controller = new RegistrationController();
-    ReactDOMClient.createRoot(element).render(<RegistrationForm controller={controller} />)
+    const controller = new AuthRegistrationFormController();
+    ReactDOMClient.createRoot(element).render(<AuthRegistrationForm controller={controller} />)
 });
 
-class RegistrationController {
+class AuthRegistrationFormController {
 
     @observable public email: string = '';
 
@@ -82,7 +82,7 @@ class RegistrationController {
     
 }
 
-const RegistrationForm: React.FC<{controller: RegistrationController}> = observer(({controller}) => {
+const AuthRegistrationForm: React.FC<{controller: AuthRegistrationFormController}> = observer(({controller}) => {
     return (<Box
         component="form"
         autoComplete="off"
