@@ -4,7 +4,6 @@ namespace App\Controller\GiftRequest;
 
 use App\Entity\User;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
-use App\Controller\GiftRequest\DTOs\GiftRegistrationFormatter;
 use App\Controller\GiftRequest\DTOs\GiftRequestFormatter;
 use App\Entity\GiftRequest;
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,7 +25,7 @@ class GiftRequestController extends AbstractController
         $giftRequests = $user->getGiftRequests()->toArray();
         
         return $this->render('gift/request/index.html.twig', [
-            'giftRequests' => $giftRequestFormatter->fromModels($giftRequests),
+            'giftRequests' => $giftRequestFormatter->fromModelList($giftRequests),
         ]);
     }
 
@@ -35,10 +34,10 @@ class GiftRequestController extends AbstractController
         Request $request,
         #[CurrentUser] ?User $user,
         EntityManagerInterface $entityManager,
-        GiftRegistrationFormatter $giftFormatter,
+        GiftRequestFormatter $giftFormatter,
     ): Response {
         
-        $giftData = $giftFormatter->fromRequest(($request));
+        $giftData = $giftFormatter->newGiftRequest(($request));
 
         $newGiftRequest = new GiftRequest();
         $newGiftRequest->setName($giftData->name);
@@ -50,5 +49,52 @@ class GiftRequestController extends AbstractController
         $entityManager->flush();
 
         return $this->json(['message' => 'Added Gift Request'], Response::HTTP_CREATED);
+    }
+
+    #[Route(path: '/edit/{id}', methods: 'GET')]
+    public function editGiftRequest(
+        int $id,
+        EntityManagerInterface $entityManager,
+        GiftRequestFormatter $giftFormatter
+    ): Response {
+        
+        $giftRequest = $entityManager->getRepository(GiftRequest::class)->find($id);
+
+        return $this->render('gift/request/edit.html.twig', [
+            'giftRequest' => $giftFormatter->fromModel($giftRequest),
+        ]);
+    }
+
+    #[Route(path: '/edit/{id}', methods: 'POST')]
+    public function handleEditGiftRequest(
+        int $id,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        GiftRequestFormatter $giftFormatter
+    ): Response {
+        
+        $giftRequest = $entityManager->getRepository(GiftRequest::class)->find($id);
+        $giftData = $giftFormatter->editGiftRequest($request);
+
+        $giftRequest->setName($giftData->name);
+        $giftRequest->setDescription($giftData->description);
+
+        $entityManager->flush();
+
+        return $this->json(['message' => 'Gift Request Updated'], Response::HTTP_OK);
+    }
+
+    #[Route(path: '/delete/{id}', methods: 'POST')]
+    public function handleDeleteGiftRequest(
+        int $id,
+        EntityManagerInterface $entityManager
+    ): Response {
+        
+        $giftRequest = $entityManager->getRepository(GiftRequest::class)->find($id);
+
+        $entityManager->remove($giftRequest);
+        $entityManager->flush();
+
+        return $this->json(['message' => 'Gift Request Deleted'], Response::HTTP_OK);
     }
 }

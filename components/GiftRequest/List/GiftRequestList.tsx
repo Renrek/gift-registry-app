@@ -4,12 +4,7 @@ import { registerComponent } from "../../component.loader";
 import { observer } from "mobx-react";
 import { makeObservable } from "mobx";
 import { Box, Button, Card, CardActions, CardContent, Typography } from "@mui/material";
-
-type GiftRequest = {
-    id: number,
-    name: string,
-    description: string,
-}
+import { GiftRequestListItemDTO } from "../../types";
 
 registerComponent('gift-request-list', (element, parameters) => {
     const [giftRequests] = parameters;
@@ -19,7 +14,7 @@ registerComponent('gift-request-list', (element, parameters) => {
 
 class GiftRequestListController {
 
-    constructor(public readonly giftRequests: Array<GiftRequest>)
+    constructor(public readonly giftRequests: Array<GiftRequestListItemDTO>)
     {
         makeObservable(this);
     }
@@ -47,7 +42,7 @@ const GiftRequestList : React.FC<{
 
 
 const GiftRequestCard : React.FC<{
-    giftRequest: GiftRequest,
+    giftRequest: GiftRequestListItemDTO,
     controller: GiftRequestListController
 }> = observer(({giftRequest, controller}) => {
     return <Card

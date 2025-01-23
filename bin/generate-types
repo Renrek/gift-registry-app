@@ -1,0 +1,60 @@
+<?php
+
+// run: php bin/generate-types
+// output: /Users/brad/Desktop/gift-registry/components/types.ts
+
+$controllerDirectory = __DIR__ . '/../src/Controller';
+$outputFile = __DIR__ . '/../components/types.ts';
+
+$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($controllerDirectory));
+$types = [];
+
+foreach ($files as $file) {
+    if ($file->isFile() && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
+        $content = file_get_contents($file->getRealPath());
+        if (preg_match('/#\[DTO\]/', $content)) {
+            require_once $file->getRealPath();
+        }
+    }
+}
+
+$declaredClasses = get_declared_classes();
+
+foreach ($declaredClasses as $class) {
+    $reflectionClass = new ReflectionClass($class);
+    $attributes = $reflectionClass->getAttributes();
+
+    foreach ($attributes as $attribute) {
+        if ($attribute->getName() === 'App\Attributes\DTO') {
+            echo "Processing class: $class\n"; // Debugging output
+            $className = $reflectionClass->getShortName();
+            $properties = $reflectionClass->getProperties(ReflectionProperty::IS_PUBLIC);
+            $typeScriptProps = [];
+
+            foreach ($properties as $property) {
+                $type = $property->getType();
+                $typeName = $type ? $type->getName() : 'any';
+
+                // Handle array types
+                if ($typeName === 'array') {
+                    $typeName = 'any[]'; // Default to any[] for arrays
+                } elseif ($typeName === 'int') {
+                    $typeName = 'number';
+                } elseif (class_exists($typeName)) {
+                    $typeName = (new ReflectionClass($typeName))->getShortName();
+                }
+
+                $typeScriptProps[] = "    {$property->getName()}: $typeName;";
+            }
+
+            $types[] = "export interface $className {\n" . implode("\n", $typeScriptProps) . "\n}";
+        }
+    }
+}
+
+if (empty($types)) {
+    echo "No DTO classes found.\n"; // Debugging output
+} else {
+    file_put_contents($outputFile, implode("\n\n", $types));
+    echo "TypeScript types generated successfully.\n"; // Debugging output
+}
