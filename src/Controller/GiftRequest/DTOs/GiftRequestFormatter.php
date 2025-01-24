@@ -9,7 +9,7 @@ class GiftRequestFormatter
 {
 
     /**
-     * Converts a GiftRequest model to an array.
+     * Converts a GiftRequest model to a GiftRequestListItemDTO.
      */
     public function fromModel(GiftRequest $giftRequest): GiftRequestListItemDTO
     {

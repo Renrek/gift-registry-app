@@ -48,7 +48,9 @@ class GiftRequestController extends AbstractController
         $entityManager->persist($newGiftRequest);
         $entityManager->flush();
 
-        return $this->json(['message' => 'Added Gift Request'], Response::HTTP_CREATED);
+        return $this->json([
+            'giftRequestListItemDTO' => $giftFormatter->fromModel($newGiftRequest),
+        ], Response::HTTP_CREATED);
     }
 
     #[Route(path: '/edit/{id}', methods: 'GET')]
@@ -84,7 +86,7 @@ class GiftRequestController extends AbstractController
         return $this->json(['message' => 'Gift Request Updated'], Response::HTTP_OK);
     }
 
-    #[Route(path: '/delete/{id}', methods: 'POST')]
+    #[Route(path: '/delete/{id}', methods: 'DELETE')]
     public function handleDeleteGiftRequest(
         int $id,
         EntityManagerInterface $entityManager
