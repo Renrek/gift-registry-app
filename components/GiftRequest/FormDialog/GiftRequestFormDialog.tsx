@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
 import axios from 'axios';
 import { GiftRequestDTO, GiftRequestListItemDTO, NewGiftRequestDTO } from '../../types';
+import AddIcon from '@mui/icons-material/Add';
 
 export class GiftRequestFormDialogController {
 
@@ -39,13 +40,7 @@ export class GiftRequestFormDialogController {
             name: this.giftRequest.name,
             description: this.giftRequest.description,
         }).then((result) => {
-            this.callback({
-                id: result.data.id,
-                name: result.data.name,
-                description: result.data.description,
-                deletePath: result.data.deletePath,
-                editPath: result.data.editPath,
-            });
+            this.callback(result.data);
         });
         this.toggleDialog();
     }
@@ -58,7 +53,7 @@ export const GiftRequestFormDialog: React.FC<{
     return (
         <React.Fragment>
             <Button variant="contained" onClick={controller.toggleDialog}>
-                Create Gift Request
+                <AddIcon /> Create Gift Request
             </Button>
             <Dialog
                 open={controller.isOpen}

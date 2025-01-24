@@ -8,6 +8,8 @@ import { DataGrid, GridColDef, GridToolbar } from '@mui/x-data-grid';
 import { GiftRequestListItemDTO } from "../../types";
 import axios from "axios";
 import { GiftRequestFormDialogController, GiftRequestFormDialog } from "../FormDialog/GiftRequestFormDialog";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 registerComponent('gift-request-list', (element, parameters) => {
     const [giftRequests] = parameters;
@@ -51,29 +53,34 @@ const GiftRequestList : React.FC<{
         (result) => {controller.addGiftRequest(result)}
     );
 
+    const handleDelete = (deletePath: string) => {
+        if ( confirm('Are you sure you want to delete this gift request?')) {
+            controller.deleteGiftRequest(deletePath);
+        }
+    }
+
     const columns: GridColDef[] = [
         { field: 'name', headerName: 'Name', flex: 1, width: 150 },
         { field: 'description', headerName: 'Description', flex: 3, width: 150 },
-        { field: 'edit', headerName: 'Edit', flex: 1},
-        { field: 'delete', headerName: 'Delete', flex: 1 },
+        { field: 'edit', headerName: 'Manage', flex: 1},
     ];
 
     columns[2].renderCell = (params) => {
-        return <Button
-            variant="contained"
-        >
-            Edit
-        </Button>;
-    };
-
-    columns[3].renderCell = (params) => {
-        return <Button 
-            variant="contained"
-            color="error"
-            onClick={() => controller.deleteGiftRequest(params.row.deletePath)}
-        >
-            Delete
-        </Button>;
+        return <div>
+            <Button
+                variant="outlined"
+                href={params.row.editPath}
+            >
+                <EditIcon />
+            </Button>
+            <Button 
+                variant="contained"
+                color="error"
+                onClick={() => handleDelete(params.row.deletePath)}
+            >
+                <DeleteIcon />
+            </Button>
+        </div>;
     };
 
     return <Box 

@@ -1,0 +1,54 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <div style="padding:2em;">
+        <h1>Edit Gift Request</h1>
+        <div style="display:flex;flex-direction:column;gap:2em;">
+           <form id="editForm" action="{{ updateURL }}" method="post">
+            <input type="hidden" name="id" value="{{ giftRequest.id }}">
+            <div class="mb-3">
+                <label for="name" class="form-label">Name:</label>
+                <input type="text" id="name" name="name" value="{{ giftRequest.name }}" class="form-control" required>
+                <div class="invalid-feedback">
+                    Please provide a name.
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description:</label>
+                <textarea id="description" name="description" class="form-control">{{ giftRequest.description }}</textarea>
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+        </div>
+    </div>
+
+    <script>
+        
+        document.getElementById('editForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                if (data.success) {
+                    alert('Gift request updated successfully!');
+                } else {
+                    alert('An error occurred while updating the gift request.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating the gift request.');
+            });
+        });
+    </script>
+{% endblock body %}

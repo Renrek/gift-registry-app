@@ -24,7 +24,7 @@ class GiftRequestController extends AbstractController
         
         $giftRequests = $user->getGiftRequests()->toArray();
         
-        return $this->render('gift/request/index.html.twig', [
+        return $this->render('gift-request/index.html.twig', [
             'giftRequests' => $giftRequestFormatter->fromModelList($giftRequests),
         ]);
     }
@@ -48,9 +48,7 @@ class GiftRequestController extends AbstractController
         $entityManager->persist($newGiftRequest);
         $entityManager->flush();
 
-        return $this->json([
-            'giftRequestListItemDTO' => $giftFormatter->fromModel($newGiftRequest),
-        ], Response::HTTP_CREATED);
+        return $this->json($giftFormatter->fromModel($newGiftRequest), Response::HTTP_CREATED);
     }
 
     #[Route(path: '/edit/{id}', methods: 'GET')]
@@ -62,12 +60,17 @@ class GiftRequestController extends AbstractController
         
         $giftRequest = $entityManager->getRepository(GiftRequest::class)->find($id);
 
-        return $this->render('gift/request/edit.html.twig', [
+        return $this->render('gift-request/edit/edit.html.twig', [
+            'updateURL' => $this->generateUrl(self::class.'::handleEditGiftRequest', ['id' => $giftRequest->getId()]),
             'giftRequest' => $giftFormatter->fromModel($giftRequest),
         ]);
     }
 
-    #[Route(path: '/edit/{id}', methods: 'POST')]
+    #[Route(
+        path: '/edit/{id}', 
+        methods: 'POST', 
+        name: self::class.'::handleEditGiftRequest')
+    ]
     public function handleEditGiftRequest(
         int $id,
         Request $request,
@@ -76,14 +79,16 @@ class GiftRequestController extends AbstractController
     ): Response {
         
         $giftRequest = $entityManager->getRepository(GiftRequest::class)->find($id);
-        $giftData = $giftFormatter->editGiftRequest($request);
 
-        $giftRequest->setName($giftData->name);
-        $giftRequest->setDescription($giftData->description);
+        $giftRequest->setName($request->request->get('name'));
+        $giftRequest->setDescription($request->request->get('description'));
 
         $entityManager->flush();
 
-        return $this->json(['message' => 'Gift Request Updated'], Response::HTTP_OK);
+        return $this->json([
+            'success' => true,
+            'message' => 'Gift Request Updated'
+        ], Response::HTTP_OK);
     }
 
     #[Route(path: '/delete/{id}', methods: 'DELETE')]
