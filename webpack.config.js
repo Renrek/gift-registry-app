@@ -40,7 +40,10 @@ module.exports = (env) => {
     
     return {
         mode: isProduction ? "production" : "development",
-        entry: "./components/main.entry.tsx",
+        entry: {
+            main: "./components/main.entry.tsx",
+            utils: "./components/utils.entry.ts"
+        },
         output: {
             filename: isProduction ? "[name].[contenthash].js" : "[name].js",
             path: path.resolve(__dirname, "public/assets"),

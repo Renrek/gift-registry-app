@@ -11,3 +11,25 @@ body {
 #main-content {
     background: white;
 }
+
+.notification {
+    padding: 10px;
+    margin: 10px 0;
+    border: solid 1px black;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
+
+.notification.success {
+    background-color: rgb(72, 143, 72);
+}
+
+.notification.error {
+    background-color: rgb(189, 94, 94);
+}
