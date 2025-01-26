@@ -68,9 +68,11 @@ class AppExtension extends AbstractExtension
         $scripts = '';
         $files = scandir($this->projectDirectory.'/public/assets');
         foreach ($files as $file){
-            if(str_starts_with($file, 'main.') && str_ends_with($file, '.js')){
+            //if(str_starts_with($file, 'main.') && str_ends_with($file, '.js')){
+            if ($file !== '.' && $file != '..') {
                 $scripts .= '<script src="/assets/'.$file.'"></script>';
             }
+            //}
         }
         return new Markup($scripts, 'UTF-8');
     }

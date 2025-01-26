@@ -5,6 +5,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import axios from 'axios';
 import { GiftRequestDTO, GiftRequestListItemDTO, NewGiftRequestDTO } from '../../types';
 import AddIcon from '@mui/icons-material/Add';
+import Notification from '../../utils/notification';
 
 export class GiftRequestFormDialogController {
 
@@ -40,6 +41,7 @@ export class GiftRequestFormDialogController {
             name: this.giftRequest.name,
             description: this.giftRequest.description,
         }).then((result) => {
+            Notification.success('Gift request created successfully');
             this.callback(result.data);
         });
         this.toggleDialog();
