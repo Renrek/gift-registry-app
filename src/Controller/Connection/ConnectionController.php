@@ -39,4 +39,5 @@ class ConnectionController extends AbstractController
 
         return new Response('Connection added successfully', Response::HTTP_CREATED);
     }
+
 }

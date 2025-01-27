@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Connection;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,6 +20,18 @@ class ConnectionRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Connection::class);
+    }
+
+    /**
+     * @return Connection[] Returns an array of Connection objects
+     */
+    public function findByUser(User $user): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.user = :user OR c.connectedUser = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
     }
 
     //    /**

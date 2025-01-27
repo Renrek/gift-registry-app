@@ -1,7 +1,25 @@
 {% extends "base.html.twig" %}
 {% block body %}
+    <h2>Profile</h2>
     <div style="padding:2em;">
-        <h2>Profile</h2>
-        {{loadComponent('invitation-panel', [invitationList])}}
+        <div>
+            {{loadComponent('invitation-panel', [invitationList])}}
+        </div>
+        <div >
+            <button 
+                class="btn btn-primary" 
+                onclick="window.location.href='/gift-request'"
+            >
+                View Gift Requests
+            </button>
+        </div>
+        <div>
+            <h3>Contacts</h3>
+            <ul>
+                {% for user in contacts %}
+                    <li>{{ user.email }}</li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
 {% endblock body %}
