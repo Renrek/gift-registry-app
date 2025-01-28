@@ -10,14 +10,14 @@ use Twig\Markup;
 class AppExtension extends AbstractExtension
 {
 
-    protected $projectDirectory;
+    protected string $projectDirectory;
 
     public function __construct(KernelInterface $kernel)
     {
         $this->projectDirectory = $kernel->getProjectDir();
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction(
@@ -38,6 +38,13 @@ class AppExtension extends AbstractExtension
         ];
     }
 
+    /**
+     * Loads a component.
+     *
+     * @param string $componentName The name of the component
+     * @param array<string, mixed> $data The data to pass to the component
+     * @return Markup The rendered component
+     */
     public function loadComponent(
         string $componentName, 
         array $data = []

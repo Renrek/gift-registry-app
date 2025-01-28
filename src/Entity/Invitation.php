@@ -7,6 +7,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 class Invitation
 {
+    /**
+     * @var int|null The identifier of an invitation, managed by the ORM
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]

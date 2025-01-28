@@ -3,14 +3,15 @@
 namespace App\Service;
 
 use App\Entity\Invitation;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
 class InvitationService
 {
-    private $entityManager;
-    private $security;
-    private $uuidService;
+    private EntityManagerInterface $entityManager;
+    private Security $security;
+    private UuidService $uuidService;
 
     public function __construct(EntityManagerInterface $entityManager, Security $security, UuidService $uuidService)
     {
@@ -23,7 +24,14 @@ class InvitationService
     {
         $invitation = new Invitation();
         $invitation->setEmail($email);
-        $invitation->setInviter($this->security->getUser());
+
+        $user = $this->security->getUser();
+        if ($user instanceof User) {
+            $invitation->setInviter($user);
+        } else {
+            $invitation->setInviter(null);
+        }
+
         $invitation->setInvitationCode($this->uuidService->generateV1UUID());
 
         $this->entityManager->persist($invitation);

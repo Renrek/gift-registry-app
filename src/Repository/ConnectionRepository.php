@@ -11,9 +11,9 @@ use Doctrine\Persistence\ManagerRegistry;
  * @extends ServiceEntityRepository<Connection>
  *
  * @method Connection|null find($id, $lockMode = null, $lockVersion = null)
- * @method Connection|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Connection|null findOneBy(array<string, mixed> $criteria, array<string, string>|null $orderBy = null)
  * @method Connection[]    findAll()
- * @method Connection[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Connection[]    findBy(array<string, mixed> $criteria, array<string, string>|null $orderBy = null, $limit = null, $offset = null)
  */
 class ConnectionRepository extends ServiceEntityRepository
 {

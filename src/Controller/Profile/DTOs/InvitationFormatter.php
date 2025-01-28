@@ -4,6 +4,11 @@ namespace App\Controller\Profile\DTOs;
 
 class InvitationFormatter
 {
+
+    /**
+     * @param array<int, \App\Entity\Invitation> $invitations
+     * @return array<int, InvitationListItemDTO>
+     */
     public function fromModels(array $invitations): array
     {
         $requests = [];

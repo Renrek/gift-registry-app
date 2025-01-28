@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 #[HasLifecycleCallbacks]
 class GiftRequest
 {
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -33,7 +34,7 @@ class GiftRequest
     private ?User $owner = null;
 
     #[ORM\Column(type: Types::BINARY)]
-    private $fulfilled;
+    private bool $fulfilled;
 
     public function getId(): ?int
     {
@@ -113,12 +114,12 @@ class GiftRequest
         return $this;
     }
 
-    public function getFulfilled()
+    public function getFulfilled() : bool
     {
         return $this->fulfilled;
     }
 
-    public function setFulfilled($fulfilled): static
+    public function setFulfilled(bool $fulfilled): static
     {
         $this->fulfilled = $fulfilled;
 

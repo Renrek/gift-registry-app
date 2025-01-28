@@ -13,6 +13,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -36,12 +37,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(targetEntity: User::class)]
     private ?User $invitedBy = null;
 
+    /**
+     * @var Collection<int, GiftRequest>
+     */
     #[ORM\OneToMany(targetEntity: GiftRequest::class, mappedBy: 'owner', orphanRemoval: true)]
     private Collection $giftRequests;
 
+    /**
+     * @var Collection<int, Connection>
+     */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Connection::class, cascade: ['persist', 'remove'])]
     private Collection $connectionsInitiated;
 
+    /**
+     * @var Collection<int, Connection>
+     */
     #[ORM\OneToMany(mappedBy: 'connectedUser', targetEntity: Connection::class, cascade: ['persist', 'remove'])]
     private Collection $connectionsReceived;
 
@@ -157,11 +167,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, Connection>
+     */
     public function getConnectionsInitiated(): Collection
     {
         return $this->connectionsInitiated;
     }
 
+    /**
+     * @return Collection<int, Connection>
+     */
     public function getConnectionsReceived(): Collection
     {
         return $this->connectionsReceived;
