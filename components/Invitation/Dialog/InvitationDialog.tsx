@@ -3,6 +3,7 @@ import { action, makeObservable, observable } from 'mobx';
 import { observer } from 'mobx-react';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
 import axios from 'axios';
+import Notification from '../../utils/notification';
 
 
 export class InvitationDialogController {
@@ -29,7 +30,10 @@ export class InvitationDialogController {
         axios.post('/invitation/create', {
           email: this.email
         }).then((res) => {
+          Notification.success('Invitation created');
           this.toggleDialog();
+        }).catch((err) => {
+          Notification.error('Failed to create invitation: ' + err.response.data.message);
         });
     }
 }

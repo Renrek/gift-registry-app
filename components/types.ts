@@ -1,3 +1,8 @@
+export interface NewConnectionDTO {
+    userId: number;
+    connectedUserId: number;
+}
+
 export interface GiftRequestDTO {
     id: number;
     name: string;
@@ -15,4 +20,9 @@ export interface GiftRequestListItemDTO {
     description: string;
     editPath: string;
     deletePath: string;
+}
+
+export interface UserDTO {
+    id: number;
+    email: string;
 }

@@ -31,8 +31,14 @@ class ProfileController extends AbstractController
         $invitationList = $invitationFormatter->fromModels($invitations);
 
         // Get connections where the current user is either the inviter or the invitee
-        $connections = $connectionRepository->findByUser($user);
+        // $connectionsInitiated = $user->getConnectionsInitiated();
+        // $connectionsReceived = $user->getConnectionsReceived();
+        // $connections = array_merge($connectionsInitiated->toArray(), $connectionsReceived->toArray());
+        // dd($connections);
 
+        // Get connections where the current user is either the inviter or the invitee
+        $connections = $connectionRepository->findByUser($user);
+        //dd($connections);
         // Extract connected users
         $connectedUsers = [];
         foreach ($connections as $connection) {
@@ -43,7 +49,7 @@ class ProfileController extends AbstractController
             }
         }
 
-              
+             //dd($connectedUsers);
 
         return $this->render('profile/index.html.twig', [
             'invitationList' => $invitationList,

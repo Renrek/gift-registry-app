@@ -7,3 +7,4 @@ import "./GiftRequest/CreateForm/GiftRequestCreateForm";
 import "./GiftRequest/List/GiftRequestList";
 import "./Navigation/Main/NavigationMain";
 import "./Invitation/Panel/InvitationPanel";
+import "./Connection/CreateForm/ConnectionCreateForm";

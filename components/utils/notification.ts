@@ -1,5 +1,5 @@
 class Notification {
-    static createNotification(type: 'success' | 'error', message: string): void {
+    static createNotification(type: 'success' | 'error' | 'info', message: string): void {
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
         notification.innerText = message;
@@ -16,6 +16,10 @@ class Notification {
 
     static error(message: string): void {
         this.createNotification('error', message);
+    }
+
+    static info(message: string): void {
+        this.createNotification('info', message);
     }
 }
 

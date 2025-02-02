@@ -10,6 +10,7 @@ import axios from "axios";
 import { GiftRequestFormDialogController, GiftRequestFormDialog } from "../FormDialog/GiftRequestFormDialog";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import UserAction from "../../utils/userAction";
 
 registerComponent('gift-request-list', (element, parameters) => {
     const [giftRequests] = parameters;
@@ -53,8 +54,8 @@ const GiftRequestList : React.FC<{
         (result) => {controller.addGiftRequest(result)}
     );
 
-    const handleDelete = (deletePath: string) => {
-        if ( confirm('Are you sure you want to delete this gift request?')) {
+    const handleDelete = async (deletePath: string) => {
+        if ( await UserAction.confirm('Are you sure you want to delete this gift request?')) {
             controller.deleteGiftRequest(deletePath);
         }
     }

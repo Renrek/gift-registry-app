@@ -53,8 +53,8 @@ foreach ($declaredClasses as $class) {
 }
 
 if (empty($types)) {
-    echo "No DTO classes found.\n"; // Debugging output
+    echo "No DTO classes found.\n";
 } else {
     file_put_contents($outputFile, implode("\n\n", $types));
-    echo "TypeScript types generated successfully.\n"; // Debugging output
+    echo "TypeScript types generated successfully.\n";
 }

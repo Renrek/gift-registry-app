@@ -33,8 +33,8 @@ class GiftRequest
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 
-    #[ORM\Column(type: Types::BINARY)]
-    private bool $fulfilled;
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private bool $fulfilled = false;
 
     public function getId(): ?int
     {
@@ -114,7 +114,7 @@ class GiftRequest
         return $this;
     }
 
-    public function getFulfilled() : bool
+    public function getFulfilled(): bool
     {
         return $this->fulfilled;
     }
