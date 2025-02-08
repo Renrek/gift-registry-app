@@ -38,10 +38,9 @@
             })
             .then(response => response.json())
             .then(data => {
-                console.log('Success:', data);
                 if (data.success) {
                     Notification.success('Gift request updated successfully!');
-                    window.location.href = '/gift-request';
+                    window.location.href = '/gift-requests';
                 } else {
                     Notification.error('An error occurred while updating the gift request.');
                 }

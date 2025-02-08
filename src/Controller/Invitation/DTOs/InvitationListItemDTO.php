@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\Profile\DTOs;
+namespace App\Controller\Invitation\DTOs;
 
 class InvitationListItemDTO
 {

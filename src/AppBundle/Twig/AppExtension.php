@@ -50,7 +50,7 @@ class AppExtension extends AbstractExtension
         array $data = []
     ) : Markup {
         
-        $parameters = base64_encode(json_encode($data));
+        $parameters = $data !== false ?base64_encode(json_encode($data)) : '';
 
         return new Markup('<div class="react-component" data-component="'
             .$componentName

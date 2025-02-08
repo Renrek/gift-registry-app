@@ -11,10 +11,10 @@ use App\Entity\User;
 use App\Service\InvitationService;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(path:'/invitation')]
+#[Route(path:'/invitations')]
 class InvitationController extends AbstractController
 {
-    #[Route(path: '/create', methods: ['POST'])]
+    #[Route(path: '/create', methods: ['POST'], name: 'create_invitation')]
     public function create(Request $request, InvitationService $invitationService): Response
     {
         $user = $this->getUser();

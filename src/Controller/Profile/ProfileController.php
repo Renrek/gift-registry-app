@@ -2,11 +2,11 @@
 
 namespace App\Controller\Profile;
 
-use App\Controller\Profile\DTOs\InvitationFormatter;
+use App\Controller\Invitation\InvitationFormatter; 
 use App\Entity\User;
 use App\Repository\ConnectionRepository;
 use App\Repository\InvitationRepository;
-use FTP\Connection;
+use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,7 +15,7 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 #[Route(path:'/profile')]
 class ProfileController extends AbstractController
 {
-    #[Route(path: '', methods: 'GET')]
+    #[Route(path: '', methods: 'GET', name: 'profile')]
     public function index(
         #[CurrentUser] ?User $user,
         InvitationFormatter $invitationFormatter,
@@ -40,16 +40,19 @@ class ProfileController extends AbstractController
         $connections = $connectionRepository->findByUser($user);
         //dd($connections);
         // Extract connected users
+        
         $connectedUsers = [];
         foreach ($connections as $connection) {
-            if ($connection->getUser()->getId() === $user->getId()) {
+            $connectedUser = $connection->getUser();
+            if(!$connectedUser) {
+                throw new EntityNotFoundException('Connected user not found');
+            }
+            if ($connectedUser->getId() === $user->getId()) {
                 $connectedUsers[] = $connection->getConnectedUser();
             } else {
-                $connectedUsers[] = $connection->getUser();
+                $connectedUsers[] = $connectedUser;
             }
         }
-
-             //dd($connectedUsers);
 
         return $this->render('profile/index.html.twig', [
             'invitationList' => $invitationList,

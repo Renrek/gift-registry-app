@@ -2,7 +2,7 @@
 
 namespace App\Controller\Connection;
 
-use App\Controller\User\DTOs\UserFormatter;
+use App\Controller\User\UserFormatter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,11 +15,11 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
-#[Route(path:'/connection')]
+#[Route(path:'/connections')]
 class ConnectionController extends AbstractController
 {
     
-    #[Route(path: '/search/{emailPartial?}', methods: ['GET'])]
+    #[Route(path: '/search/{emailPartial?}', methods: ['GET'], name: 'search_connections')]
     public function search(
         string $emailPartial, 
         UserRepository $userRepository,
@@ -85,7 +85,7 @@ class ConnectionController extends AbstractController
         return new Response('Connection added successfully', Response::HTTP_CREATED);
     }
 
-    #[Route(path:'/confirm/{connectionId}', methods: ['POST'])]
+    #[Route(path:'/{connectionId}/confirm', methods: ['POST'])]
     public function confirm(
         int $connectionId, 
         EntityManagerInterface $entityManager,

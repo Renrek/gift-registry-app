@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Connection;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -20,6 +21,22 @@ class ConnectionRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Connection::class);
+    }
+
+    /**
+     * Finds an entity by its primary key or throws an EntityNotFoundException.
+     *
+     * @param int $id
+     * @return Connection
+     * @throws EntityNotFoundException
+     */
+    public function findOrFail(int $id): Connection
+    {
+        $connection = $this->find($id);
+        if (!$connection) {
+            throw new EntityNotFoundException('Connection not found');
+        }
+        return $connection;
     }
 
     /**

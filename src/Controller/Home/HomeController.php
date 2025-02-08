@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route(path:'')]
 class HomeController extends AbstractController
 {
-    #[Route(path:'', methods: 'GET')]
+    #[Route(path:'', methods: 'GET', name: 'home')]
     public function index(): Response
     {
         $securityContext = $this->container->get('security.authorization_checker');

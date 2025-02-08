@@ -1,7 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\GiftRequest\DTOs;
+namespace App\Controller\GiftRequest;
 
+use App\Controller\GiftRequest\DTOs\GiftRequestDTO;
+use App\Controller\GiftRequest\DTOs\NewGiftRequestDTO;
 use App\Entity\GiftRequest;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -11,14 +13,14 @@ class GiftRequestFormatter
     /**
      * Converts a GiftRequest model to a GiftRequestListItemDTO.
      */
-    public function fromModel(GiftRequest $giftRequest): GiftRequestListItemDTO
+    public function fromModel(GiftRequest $giftRequest): GiftRequestDTO
     {
-        return new GiftRequestListItemDTO(
+        return new GiftRequestDTO(
             id: $giftRequest->getId(),
             name: $giftRequest->getName(),
             description: $giftRequest->getDescription(),
-            editPath: '/gift-request/edit/' . $giftRequest->getId(),
-            deletePath: '/gift-request/delete/' . $giftRequest->getId(),
+            editPath: '/gift-requests/'. $giftRequest->getId() .'/edit',
+            deletePath: '/gift-requests/'. $giftRequest->getId() .'/delete',
         );
     }
 
@@ -54,8 +56,10 @@ class GiftRequestFormatter
 
         return new GiftRequestDTO(
             id: $payload->id,
-            name: $payload->name,
+            name: $payload,
             description: $payload->description,
+            editPath: $payload->editPath,
+            deletePath: $payload->deletePath,
         );
     }
 }

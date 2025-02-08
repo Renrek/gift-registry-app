@@ -64,8 +64,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getId(): ?int
     {
+        if ($this->id === null) {
+            throw new \LogicException('ID should not be accessed before persistence.');
+        }
         return $this->id;
-    }
+    } 
 
     public function getEmail(): ?string
     {
@@ -97,10 +100,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
+        $roles = array_map('strval', $roles);
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
-        return array_unique($roles);
+        return array_values(array_unique($roles));
     }
 
     /**
@@ -118,6 +122,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getPassword(): string
     {
+        if ($this->password === null) {
+            throw new \LogicException('Password should not be accessed before persistence.');
+        }
         return $this->password;
     }
 

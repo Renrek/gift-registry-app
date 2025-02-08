@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\GiftRequest;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,6 +20,22 @@ class GiftRequestRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, GiftRequest::class);
+    }
+
+    /**
+     * Finds an entity by its primary key or throws an EntityNotFoundException.
+     *
+     * @param int $id
+     * @return GiftRequest
+     * @throws EntityNotFoundException
+     */
+    public function findOrFail(int $id): GiftRequest
+    {
+        $giftRequest = $this->find($id);
+        if (!$giftRequest) {
+            throw new EntityNotFoundException('Gift Request not found');
+        }
+        return $giftRequest;
     }
 
     //    /**

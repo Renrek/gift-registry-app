@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Invitation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -21,6 +22,21 @@ class InvitationRepository extends ServiceEntityRepository
         parent::__construct($registry, Invitation::class);
     }
 
+    /**
+     * Finds an entity by its primary key or throws an EntityNotFoundException.
+     *
+     * @param int $id
+     * @return Invitation
+     * @throws EntityNotFoundException
+     */
+    public function findOrFail(int $id): Invitation
+    {
+        $invitation = $this->find($id);
+        if (!$invitation) {
+            throw new EntityNotFoundException('Invitation not found');
+        }
+        return $invitation;
+    }
     //    /**
     //     * @return Invitation[] Returns an array of Invitation objects
     //     */

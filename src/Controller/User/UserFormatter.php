@@ -1,8 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\User\DTOs;
+namespace App\Controller\User;
 
+use App\Controller\User\DTOs\UserDTO;
 use App\Entity\User;
+use DomainException;
 
 class UserFormatter
 {
@@ -17,6 +19,10 @@ class UserFormatter
 
     public function fromEntity(User $user): UserDTO
     {
+        if (!$user->getId() || !$user->getEmail()) {
+            throw new DomainException('User must have an ID and email.');
+        }
+        
         return new UserDTO(
             id: $user->getId(),
             email: $user->getEmail(),

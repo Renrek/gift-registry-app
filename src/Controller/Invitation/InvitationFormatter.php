@@ -1,6 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\Profile\DTOs;
+namespace App\Controller\Invitation;
+
+use App\Controller\Invitation\DTOs\InvitationListItemDTO;
 
 class InvitationFormatter
 {
@@ -13,6 +15,11 @@ class InvitationFormatter
     {
         $requests = [];
         foreach ($invitations as $invitation) {
+
+            if (!$invitation->getId() || !$invitation->getEmail() || !$invitation->getInvitationCode()) {
+                throw new \DomainException('Invitation must have an ID, email and code.');
+            }
+
             $requests[] = new InvitationListItemDTO(
                 id: $invitation->getId(),
                 email: $invitation->getEmail(),

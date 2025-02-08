@@ -4,24 +4,29 @@ namespace App\Controller\GiftRequest;
 
 use App\Entity\User;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
-use App\Controller\GiftRequest\DTOs\GiftRequestFormatter;
+use App\Controller\GiftRequest\GiftRequestFormatter;
 use App\Entity\GiftRequest;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route(path: '/gift-request')]
+#[Route(path: '/gift-requests')]
 class GiftRequestController extends AbstractController
 {
 
-    #[Route(path:'', methods: 'GET')]
+    #[Route(path:'', methods: 'GET', name: 'gift_requests')]
     public function index(
         #[CurrentUser] ?User $user,
         GiftRequestFormatter $giftRequestFormatter
     ): Response {
         
+        if (!$user) {
+            throw $this->createAccessDeniedException();
+        }
+
         $giftRequests = $user->getGiftRequests()->toArray();
         
         return $this->render('gift-request/index.html.twig', [
@@ -29,7 +34,7 @@ class GiftRequestController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/add', methods: 'POST')]
+    #[Route(path: '/add', methods: 'POST', name: 'add_gift_request')]
     public function handleAddGiftRequest(
         Request $request,
         #[CurrentUser] ?User $user,
@@ -51,7 +56,7 @@ class GiftRequestController extends AbstractController
         return $this->json($giftFormatter->fromModel($newGiftRequest), Response::HTTP_CREATED);
     }
 
-    #[Route(path: '/edit/{id}', methods: 'GET')]
+    #[Route(path: '/{id}/edit', methods: 'GET', name: 'edit_gift_request')]
     public function editGiftRequest(
         int $id,
         EntityManagerInterface $entityManager,
@@ -60,6 +65,10 @@ class GiftRequestController extends AbstractController
         
         $giftRequest = $entityManager->getRepository(GiftRequest::class)->find($id);
 
+        if(!$giftRequest) {
+            throw new EntityNotFoundException('Gift Request not found');
+        }
+
         return $this->render('gift-request/edit/edit.html.twig', [
             'updateURL' => $this->generateUrl(self::class.'::handleEditGiftRequest', ['id' => $giftRequest->getId()]),
             'giftRequest' => $giftFormatter->fromModel($giftRequest),
@@ -67,19 +76,20 @@ class GiftRequestController extends AbstractController
     }
 
     #[Route(
-        path: '/edit/{id}', 
+        path: '/{id}/edit', 
         methods: 'POST', 
-        name: self::class.'::handleEditGiftRequest')
-    ]
+        name: 'edit_gift_request'
+    )]
     public function handleEditGiftRequest(
         int $id,
         Request $request,
         EntityManagerInterface $entityManager,
-        GiftRequestFormatter $giftFormatter
     ): Response {
         
-        $giftRequest = $entityManager->getRepository(GiftRequest::class)->find($id);
 
+
+        $giftRequest = $entityManager->getRepository(GiftRequest::class)->findOrFail($id);
+        
         $giftRequest->setName($request->request->get('name'));
         $giftRequest->setDescription($request->request->get('description'));
 
@@ -91,7 +101,7 @@ class GiftRequestController extends AbstractController
         ], Response::HTTP_OK);
     }
 
-    #[Route(path: '/delete/{id}', methods: 'DELETE')]
+    #[Route(path: '/{id}/delete', methods: 'DELETE', name: 'delete_gift_request')]
     public function handleDeleteGiftRequest(
         int $id,
         EntityManagerInterface $entityManager

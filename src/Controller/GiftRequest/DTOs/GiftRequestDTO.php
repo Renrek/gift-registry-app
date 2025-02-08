@@ -11,5 +11,7 @@ class GiftRequestDTO
         public int $id,
         public string $name,
         public string $description,
+        public string $editPath,
+        public string $deletePath,
     ) {}
 }
