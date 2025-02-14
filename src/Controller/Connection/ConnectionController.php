@@ -19,9 +19,9 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class ConnectionController extends AbstractController
 {
     
-    #[Route(path: '/search/{emailPartial?}', methods: ['GET'], name: 'search_connections')]
-    public function search(
-        string $emailPartial, 
+    #[Route(path: '/search', methods: ['GET'], name: 'search_connections')]
+    public function search( 
+        Request $request,
         UserRepository $userRepository,
         UserFormatter $userFormatter,
         Security $security,
@@ -30,6 +30,8 @@ class ConnectionController extends AbstractController
     {
         /** @var User $user */
         $user = $security->getUser();
+
+        $emailPartial = $request->query->get('emailPartial', '');
 
         if (!$user) {
             throw new AccessDeniedException('You must be logged in to search for a connection.');

@@ -8,14 +8,14 @@
         <div >
             <button 
                 class="btn btn-primary" 
-                onclick="window.location.href='/gift-request'"
+                onclick="window.location.href='{{ path('gift_requests') }}'"
             >
                 View Gift Requests
             </button>
         </div>
         <div>
             <h3>Contacts</h3>
-            {{loadComponent('connection-panel', [])}}
+            {{loadComponent('connection-panel', [path('search_connections')])}}
             <ul>
                 {% for user in contacts %}
                     <li>{{ user.email }}</li>

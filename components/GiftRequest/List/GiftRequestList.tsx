@@ -3,7 +3,7 @@ import * as ReactDOMClient from 'react-dom/client';
 import { registerComponent } from "../../component.loader";
 import { observer } from "mobx-react";
 import { action, makeObservable, observable } from "mobx";
-import { Box, Button, Card, CardActions, CardContent, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { DataGrid, GridColDef, GridToolbar } from '@mui/x-data-grid';
 import { GiftRequestListItemDTO } from "../../types";
 import axios from "axios";
@@ -13,8 +13,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import UserAction from "../../utils/userAction";
 
 registerComponent('gift-request-list', (element, parameters) => {
-    const [giftRequests] = parameters;
-    const controller = new GiftRequestListController(giftRequests);
+    const [giftRequests, addGiftRequestUrl] = parameters;
+    const controller = new GiftRequestListController(giftRequests, addGiftRequestUrl);
     ReactDOMClient.createRoot(element).render(<GiftRequestList controller={controller}/>);
 });
 
@@ -23,10 +23,12 @@ class GiftRequestListController {
     @observable
     public giftRequests: Array<GiftRequestListItemDTO> = [];
 
-    constructor(giftRequests: Array<GiftRequestListItemDTO>)
+    public addGiftRequestURL: string;
+    constructor(giftRequests: Array<GiftRequestListItemDTO>, addGiftRequestURL: string)
     {
         makeObservable(this);
         this.giftRequests = giftRequests;
+        this.addGiftRequestURL = addGiftRequestURL;
     }
 
     @action
@@ -51,7 +53,8 @@ const GiftRequestList : React.FC<{
 }> = observer(({controller}) => {
 
     const giftRequestCreateDialogController = new GiftRequestFormDialogController(
-        (result) => {controller.addGiftRequest(result)}
+        (result) => {controller.addGiftRequest(result)},
+        controller.addGiftRequestURL
     );
 
     const handleDelete = async (deletePath: string) => {

@@ -3,10 +3,10 @@
 // run: php bin/generate-types
 // output: /Users/brad/Desktop/gift-registry/components/types.ts
 
-$controllerDirectory = __DIR__ . '/../src/Controller';
+$srcDirectory = __DIR__ . '/../src';
 $outputFile = __DIR__ . '/../components/types.ts';
 
-$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($controllerDirectory));
+$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($srcDirectory));
 $types = [];
 
 foreach ($files as $file) {
@@ -35,26 +35,34 @@ foreach ($declaredClasses as $class) {
                 $type = $property->getType();
                 $typeName = $type ? $type->getName() : 'any';
 
-                // Handle array types
-                if ($typeName === 'array') {
-                    $typeName = 'any[]'; // Default to any[] for arrays
-                } elseif ($typeName === 'int') {
-                    $typeName = 'number';
-                } elseif (class_exists($typeName)) {
-                    $typeName = (new ReflectionClass($typeName))->getShortName();
+                // Handle array types with #[ArrayOf]
+                $propertyAttributes = $property->getAttributes();
+                foreach ($propertyAttributes as $propertyAttribute) {
+                    if ($propertyAttribute->getName() === 'App\Attributes\ArrayOf') {
+                        $args = $propertyAttribute->getArguments();
+                        if (isset($args[0])) {
+                            $typeName = basename(str_replace('\\', '/', $args[0])) . '[]';
+                        }
+                    }
                 }
 
-                $typeScriptProps[] = "    {$property->getName()}: $typeName;";
+                // Convert PHP types to TypeScript types
+                if ($typeName === 'int') {
+                    $typeName = 'number'; // Convert PHP int to TypeScript number
+                } elseif ($typeName === 'bool') {
+                    $typeName = 'boolean'; // Convert PHP bool to TypeScript boolean
+                } elseif ($typeName === 'array') {
+                    $typeName = 'any[]'; // Default to any[] for arrays
+                }
+
+                $typeScriptProps[] = "{$property->getName()}: {$typeName};";
             }
 
-            $types[] = "export interface $className {\n" . implode("\n", $typeScriptProps) . "\n}";
+            $types[] = "export interface {$className} {\n    " . implode("\n    ", $typeScriptProps) . "\n}";
         }
     }
 }
 
-if (empty($types)) {
-    echo "No DTO classes found.\n";
-} else {
-    file_put_contents($outputFile, implode("\n\n", $types));
-    echo "TypeScript types generated successfully.\n";
-}
+file_put_contents($outputFile, implode("\n\n", $types));
+
+echo "TypeScript types generated in {$outputFile}\n";

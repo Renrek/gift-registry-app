@@ -7,6 +7,8 @@ export interface GiftRequestDTO {
     id: number;
     name: string;
     description: string;
+    editPath: string;
+    deletePath: string;
 }
 
 export interface NewGiftRequestDTO {
@@ -14,15 +16,19 @@ export interface NewGiftRequestDTO {
     description: string;
 }
 
-export interface GiftRequestListItemDTO {
-    id: number;
-    name: string;
-    description: string;
-    editPath: string;
-    deletePath: string;
-}
-
 export interface UserDTO {
     id: number;
     email: string;
+}
+
+export interface InvitationListItemDTO {
+    id: number;
+    email: string;
+    isUsed: boolean;
+    code: string;
+}
+
+export interface InvitationPanelConfig {
+    createInvitationUrl: string;
+    invitationList: InvitationListItemDTO[];
 }

@@ -6,9 +6,13 @@ use App\Controller\GiftRequest\DTOs\GiftRequestDTO;
 use App\Controller\GiftRequest\DTOs\NewGiftRequestDTO;
 use App\Entity\GiftRequest;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class GiftRequestFormatter
 {
+    public function __construct(
+        private UrlGeneratorInterface $urlGenerator,
+    ){}
 
     /**
      * Converts a GiftRequest model to a GiftRequestListItemDTO.
@@ -19,8 +23,8 @@ class GiftRequestFormatter
             id: $giftRequest->getId(),
             name: $giftRequest->getName(),
             description: $giftRequest->getDescription(),
-            editPath: '/gift-requests/'. $giftRequest->getId() .'/edit',
-            deletePath: '/gift-requests/'. $giftRequest->getId() .'/delete',
+            editPath: $this->urlGenerator->generate('edit_gift_request', ['id' => $giftRequest->getId()]),
+            deletePath: $this->urlGenerator->generate('delete_gift_request', ['id' => $giftRequest->getId()]),
         );
     }
 

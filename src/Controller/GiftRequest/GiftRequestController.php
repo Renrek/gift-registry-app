@@ -4,7 +4,6 @@ namespace App\Controller\GiftRequest;
 
 use App\Entity\User;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
-use App\Controller\GiftRequest\GiftRequestFormatter;
 use App\Entity\GiftRequest;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
@@ -31,10 +30,11 @@ class GiftRequestController extends AbstractController
         
         return $this->render('gift-request/index.html.twig', [
             'giftRequests' => $giftRequestFormatter->fromModelList($giftRequests),
+            'addGiftRequestURL' => $this->generateUrl('add_gift_request'),
         ]);
     }
 
-    #[Route(path: '/add', methods: 'POST', name: 'add_gift_request')]
+    #[Route(path: '/add', methods: ['POST'], name: 'add_gift_request')]
     public function handleAddGiftRequest(
         Request $request,
         #[CurrentUser] ?User $user,
@@ -56,7 +56,11 @@ class GiftRequestController extends AbstractController
         return $this->json($giftFormatter->fromModel($newGiftRequest), Response::HTTP_CREATED);
     }
 
-    #[Route(path: '/{id}/edit', methods: 'GET', name: 'edit_gift_request')]
+    #[Route(
+        path: '/{id}/edit', 
+        methods: ['GET'], 
+        name: 'edit_gift_request')
+    ]
     public function editGiftRequest(
         int $id,
         EntityManagerInterface $entityManager,
@@ -78,7 +82,7 @@ class GiftRequestController extends AbstractController
     #[Route(
         path: '/{id}/edit', 
         methods: 'POST', 
-        name: 'edit_gift_request'
+        name: 'update_gift_request'
     )]
     public function handleEditGiftRequest(
         int $id,
@@ -86,8 +90,6 @@ class GiftRequestController extends AbstractController
         EntityManagerInterface $entityManager,
     ): Response {
         
-
-
         $giftRequest = $entityManager->getRepository(GiftRequest::class)->findOrFail($id);
         
         $giftRequest->setName($request->request->get('name'));

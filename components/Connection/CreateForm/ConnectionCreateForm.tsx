@@ -9,7 +9,8 @@ import { UserDTO } from "../../types";
 import Notification from "../../utils/notification";
 
 registerComponent('connection-panel', (element, parameters) => {
-    const controller = new ConnectionCreateFormController();
+    const [searchURL] = parameters;
+    const controller = new ConnectionCreateFormController(searchURL);
     ReactDOMClient.createRoot(element).render(
         <ConnectionCreateForm controller={controller} />
     );  
@@ -23,7 +24,9 @@ class ConnectionCreateFormController {
     @observable
     public userList: UserDTO[] = []
 
-    public constructor() {
+    public constructor(
+        public searchURL: string
+    ) {
         makeObservable(this);
     }
 
@@ -38,7 +41,11 @@ class ConnectionCreateFormController {
             Notification.error("Please enter at least 3 characters.");
             return;
         }
-        axios.get(`/connection/search/${encodeURIComponent(this.emailSearchString)}`)
+        axios.get(this.searchURL, {
+            params: {
+                emailPartial: this.emailSearchString
+            }
+        })
         .then((res) => {
             if (res.data.length === 0) {
                 Notification.info("No users found.");

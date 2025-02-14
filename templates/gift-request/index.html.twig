@@ -4,7 +4,7 @@
         <h1>My Gift Requests</h1>
         <div style="display:flex;flex-direction:column;gap:2em;">
             <div>
-                {{loadComponent('gift-request-list', [giftRequests])}}
+                {{loadComponent('gift-request-list', [giftRequests, addGiftRequestURL])}} // add config
             </div>
         </div>
     </div>

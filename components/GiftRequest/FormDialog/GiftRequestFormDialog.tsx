@@ -18,6 +18,7 @@ export class GiftRequestFormDialogController {
 
     constructor(
         private callback: (result: GiftRequestListItemDTO) => void,
+        public addGiftRequestURL: string
     ) {
         makeObservable(this);
     }
@@ -37,7 +38,7 @@ export class GiftRequestFormDialogController {
 
     @action
     public submit = async (): Promise<void> => {
-        await axios.post('/gift-request/add', {
+        await axios.post(this.addGiftRequestURL, {
             name: this.giftRequest.name,
             description: this.giftRequest.description,
         }).then((result) => {

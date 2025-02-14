@@ -2,6 +2,9 @@
 
 namespace App\Controller\Invitation\DTOs;
 
+use App\Attributes\DTO;
+
+#[DTO]
 class InvitationListItemDTO
 {
     public function __construct(

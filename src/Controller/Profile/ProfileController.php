@@ -4,6 +4,7 @@ namespace App\Controller\Profile;
 
 use App\Controller\Invitation\InvitationFormatter; 
 use App\Entity\User;
+use App\Feature\InvitationPanel\DTOs\InvitationPanelConfig;
 use App\Repository\ConnectionRepository;
 use App\Repository\InvitationRepository;
 use Doctrine\ORM\EntityNotFoundException;
@@ -55,7 +56,10 @@ class ProfileController extends AbstractController
         }
 
         return $this->render('profile/index.html.twig', [
-            'invitationList' => $invitationList,
+            'invitationConfig' => new InvitationPanelConfig(
+                createInvitationUrl: $this->generateUrl('create_invitation'),
+                invitationList: $invitationList,
+            ),
             'contacts' => $connectedUsers,
         ]);
     }
