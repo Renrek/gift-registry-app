@@ -5,12 +5,12 @@ import { observer } from "mobx-react";
 import { action, makeObservable, observable } from "mobx";
 import { Box, Button } from "@mui/material";
 import { DataGrid, GridColDef, GridToolbar } from '@mui/x-data-grid';
-import { GiftRequestListItemDTO } from "../../types";
 import axios from "axios";
 import { GiftRequestFormDialogController, GiftRequestFormDialog } from "../FormDialog/GiftRequestFormDialog";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import UserAction from "../../utils/userAction";
+import { GiftRequestDTO } from "../../types";
 
 registerComponent('gift-request-list', (element, parameters) => {
     const [giftRequests, addGiftRequestUrl] = parameters;
@@ -21,10 +21,10 @@ registerComponent('gift-request-list', (element, parameters) => {
 class GiftRequestListController {
 
     @observable
-    public giftRequests: Array<GiftRequestListItemDTO> = [];
+    public giftRequests: Array<GiftRequestDTO> = [];
 
     public addGiftRequestURL: string;
-    constructor(giftRequests: Array<GiftRequestListItemDTO>, addGiftRequestURL: string)
+    constructor(giftRequests: Array<GiftRequestDTO>, addGiftRequestURL: string)
     {
         makeObservable(this);
         this.giftRequests = giftRequests;
@@ -42,7 +42,7 @@ class GiftRequestListController {
     }
 
     @action
-    addGiftRequest(giftRequest: GiftRequestListItemDTO): void
+    addGiftRequest(giftRequest: GiftRequestDTO): void
     {
         this.giftRequests = [...this.giftRequests, giftRequest];
     }

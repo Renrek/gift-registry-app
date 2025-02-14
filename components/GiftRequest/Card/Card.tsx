@@ -1,12 +1,12 @@
 import React from "react";
 import { observer } from "mobx-react";
 import { Button, Card, CardActions, CardContent, Typography } from "@mui/material";
-import { GiftRequestListItemDTO } from "../../types";
+import { GiftRequestDTO } from "../../types";
 
 
 //Incomplete stub
 const GiftRequestCard : React.FC<{
-    giftRequest: GiftRequestListItemDTO,
+    giftRequest: GiftRequestDTO,
 }> = observer(({giftRequest}) => {
     return <Card
         variant="outlined"

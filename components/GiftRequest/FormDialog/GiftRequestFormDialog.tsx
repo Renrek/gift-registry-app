@@ -3,7 +3,7 @@ import { action, makeObservable, observable } from 'mobx';
 import { observer } from 'mobx-react';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
 import axios from 'axios';
-import { GiftRequestDTO, GiftRequestListItemDTO, NewGiftRequestDTO } from '../../types';
+import { GiftRequestDTO, NewGiftRequestDTO } from '../../types';
 import AddIcon from '@mui/icons-material/Add';
 import Notification from '../../utils/notification';
 
@@ -17,7 +17,7 @@ export class GiftRequestFormDialogController {
     }
 
     constructor(
-        private callback: (result: GiftRequestListItemDTO) => void,
+        private callback: (result: GiftRequestDTO) => void,
         public addGiftRequestURL: string
     ) {
         makeObservable(this);
