@@ -1,9 +1,7 @@
 import React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
 import { registerComponent } from '../../component.loader';
-import { ConnectionCreateForm, ConnectionCreateFormController } from '../CreateForm/ConnectionCreateForm';
 import { action, makeObservable, observable, runInAction } from 'mobx';
-
 import { ConfirmStatus, ConnectionPanelConfig, ConnectionPanelItemDTO } from '../../types';
 import { DataGrid, GridColDef, GridDensity } from '@mui/x-data-grid';
 import { Button } from '@mui/material';
