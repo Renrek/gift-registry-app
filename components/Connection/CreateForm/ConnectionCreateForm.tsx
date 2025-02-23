@@ -2,21 +2,12 @@ import { Button, FormControl, Input, InputLabel } from "@mui/material";
 import { action, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
-import * as ReactDOMClient from 'react-dom/client';
-import { registerComponent } from "../../component.loader";
 import axios from 'axios';
 import { UserDTO } from "../../types";
 import Notification from "../../utils/notification";
 
-registerComponent('connection-panel', (element, parameters) => {
-    const [searchURL] = parameters;
-    const controller = new ConnectionCreateFormController(searchURL);
-    ReactDOMClient.createRoot(element).render(
-        <ConnectionCreateForm controller={controller} />
-    );  
-});
 
-class ConnectionCreateFormController {
+export class ConnectionCreateFormController {
 
     @observable
     public emailSearchString: string = "";
@@ -25,7 +16,8 @@ class ConnectionCreateFormController {
     public userList: UserDTO[] = []
 
     public constructor(
-        public searchURL: string
+        public searchURL: string,
+        public addURL: string
     ) {
         makeObservable(this);
     }
@@ -57,8 +49,9 @@ class ConnectionCreateFormController {
         });
     }
 
+    @action
     public handleAdd = (user: UserDTO): void => {
-        axios.post(`/connection/add`, user).then((res) => {
+        axios.post(this.addURL, user).then((res) => {
             Notification.success(`${user.email} will be added to your contacts once they accept.`);
         }).catch((err) => {
             Notification.error("An unexpected error occurred.");
@@ -67,7 +60,7 @@ class ConnectionCreateFormController {
 
 }
 
-const ConnectionCreateForm: React.FC<{
+export const ConnectionCreateForm: React.FC<{
     controller: ConnectionCreateFormController
 }> = observer(({controller}) => {
     return <>

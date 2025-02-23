@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { action, makeObservable, observable } from 'mobx';
 import { observer } from 'mobx-react';
+import AddIcon from '@mui/icons-material/Add';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
 import axios from 'axios';
 import Notification from '../../utils/notification';
@@ -11,7 +12,9 @@ export class InvitationDialogController {
     @observable public email: string = '';
     @observable public isOpen: boolean = false;
 
-    constructor() {
+    constructor(
+      public readonly createInvitationUrl: string
+    ) {
       makeObservable(this);
     }
 
@@ -27,7 +30,7 @@ export class InvitationDialogController {
 
     @action
     public submit = (): void => {
-        axios.post('/invitation/create', {
+        axios.post(this.createInvitationUrl, {
           email: this.email
         }).then((res) => {
           Notification.success('Invitation created');
@@ -42,7 +45,7 @@ export const InviteDialog : React.FC<{controller: InvitationDialogController}> =
 
   return <React.Fragment>
     <Button variant="contained" onClick={controller.toggleDialog}>
-        Create Invitation
+      <AddIcon /> Create Invitation
     </Button>
     <Dialog
         open={controller.isOpen}

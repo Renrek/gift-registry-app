@@ -51,6 +51,17 @@ class ConnectionRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @return Connection[] Returns an array of Connection objects
+     */
+    public function getAllConnections(User $user): array
+    {
+        $connections = $this->findBy(['user' => $user]);
+        $inverseConnections = $this->findBy(['connectedUser' => $user]);
+
+        return array_merge($connections, $inverseConnections);
+    }
+
     //    /**
     //     * @return Connection[] Returns an array of Connection objects
     //     */

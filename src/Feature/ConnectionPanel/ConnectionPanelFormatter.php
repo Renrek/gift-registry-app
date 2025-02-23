@@ -1,0 +1,67 @@
+<?php declare(strict_types=1);
+
+namespace App\Feature\ConnectionPanel;
+
+use App\Entity\Connection;
+use App\Entity\User;
+use App\Feature\ConnectionPanel\DTOs\ConnectionPanelItemDTO;
+use App\Feature\ConnectionPanel\Enums\ConfirmStatus;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
+class ConnectionPanelFormatter
+{
+    public function __construct(
+        private UrlGeneratorInterface $urlGenerator,
+        private Security $security,
+    ) {}
+
+    /**
+     * Converts a list of Connection models to an array.
+     * 
+     * @param Connection[] $connections An array of Connection models.
+     * @return ConnectionPanelItemDTO[]
+     */
+    public function fromModelList(array $connections): array
+    {
+        $requests = [];
+        foreach ($connections as $connection) {
+            $requests[] = $this->fromModels($connection);
+        }
+
+        return $requests;
+    }
+
+    public function fromModels(Connection $connection): ConnectionPanelItemDTO
+    {
+
+        $user = $this->security->getUser();
+
+        if (!$user instanceof User) {
+            throw new \LogicException('The user is not logged in or is not an instance of User.');
+        }
+        
+        $status = $connection->isConfirmed() ? ConfirmStatus::CONFIRMED  : ConfirmStatus::NOT_CONFIRMED;
+        $isConnectionInitiator = $connection->getUser()->getId() === $user->getId();
+        if ($isConnectionInitiator) {
+            // If the user is the initiator of the connection, the status is pending if the connection is not confirmed.
+            if (!$connection->isConfirmed()) {
+                $status = ConfirmStatus::PENDING;
+            }
+            $connectedUser = $connection->getConnectedUser();
+        } else {
+            $connectedUser = $connection->getUser();
+        }
+
+
+
+        return new ConnectionPanelItemDTO(
+            id: $connection->getId(),
+            userId: $connectedUser->getId(),
+            email: $connectedUser->getEmail(),
+            status: $status,
+            confirmUrl: $this->urlGenerator->generate('confirm_connection', ['connectionId' => $connection->getId()]),
+            deleteUrl: $this->urlGenerator->generate('delete_connection', ['connectionId' => $connection->getId()]),
+        );
+    }
+}

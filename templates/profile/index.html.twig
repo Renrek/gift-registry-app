@@ -1,26 +1,13 @@
 {% extends "base.html.twig" %}
 {% block body %}
+    
     <h2>Profile</h2>
-    <div style="padding:2em;">
-        <div>
-            {{loadComponent('invitation-panel', [invitationList])}}
+    <div style="display: flex; padding: 2em;">
+        <div style="flex: 1; padding-right: 1em;">
+            {{ loadComponent('invitation-panel', [invitationConfig]) }}
         </div>
-        <div >
-            <button 
-                class="btn btn-primary" 
-                onclick="window.location.href='{{ path('gift_requests') }}'"
-            >
-                View Gift Requests
-            </button>
-        </div>
-        <div>
-            <h3>Contacts</h3>
-            {{loadComponent('connection-panel', [path('search_connections')])}}
-            <ul>
-                {% for user in contacts %}
-                    <li>{{ user.email }}</li>
-                {% endfor %}
-            </ul>
+        <div style="flex: 1; padding-left: 1em;">
+            {{ loadComponent('connection-panel', [connectionConfig]) }}
         </div>
     </div>
 {% endblock body %}

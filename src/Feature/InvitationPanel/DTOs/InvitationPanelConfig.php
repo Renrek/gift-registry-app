@@ -4,7 +4,7 @@ namespace App\Feature\InvitationPanel\DTOs;
 
 use App\Attributes\ArrayOf;
 use App\Attributes\DTO;
-use App\Controller\Invitation\DTOs\InvitationListItemDTO;
+use App\Controller\Web\Invitation\DTOs\InvitationListItemDTO;
 
 #[DTO]
 class InvitationPanelConfig

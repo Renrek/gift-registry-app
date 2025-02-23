@@ -8,11 +8,12 @@ $outputFile = __DIR__ . '/../components/types.ts';
 
 $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($srcDirectory));
 $types = [];
+$enums = [];
 
 foreach ($files as $file) {
     if ($file->isFile() && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
         $content = file_get_contents($file->getRealPath());
-        if (preg_match('/#\[DTO\]/', $content)) {
+        if (preg_match('/#\[DTO\]/', $content) || preg_match('/#\[DTOEnum\]/', $content)) {
             require_once $file->getRealPath();
         }
     }
@@ -33,6 +34,7 @@ foreach ($declaredClasses as $class) {
 
             foreach ($properties as $property) {
                 $type = $property->getType();
+                
                 $typeName = $type ? $type->getName() : 'any';
 
                 // Handle array types with #[ArrayOf]
@@ -45,7 +47,7 @@ foreach ($declaredClasses as $class) {
                         }
                     }
                 }
-
+                
                 // Convert PHP types to TypeScript types
                 if ($typeName === 'int') {
                     $typeName = 'number'; // Convert PHP int to TypeScript number
@@ -53,16 +55,31 @@ foreach ($declaredClasses as $class) {
                     $typeName = 'boolean'; // Convert PHP bool to TypeScript boolean
                 } elseif ($typeName === 'array') {
                     $typeName = 'any[]'; // Default to any[] for arrays
+                } elseif (strpos($typeName, 'App\\') !== false) {
+                    $typeName = basename(str_replace('\\', '/', $typeName)); // Convert PHP namespace to TypeScript type
                 }
 
                 $typeScriptProps[] = "{$property->getName()}: {$typeName};";
             }
 
             $types[] = "export interface {$className} {\n    " . implode("\n    ", $typeScriptProps) . "\n}";
+        } elseif ($attribute->getName() === 'App\Attributes\DTOEnum') {
+            echo "Processing enum: $class\n";
+            $enumName = $reflectionClass->getShortName();
+            $enumCases = $reflectionClass->getConstants();
+            $typeScriptEnumCases = [];
+
+            foreach ($enumCases as $case) {
+                $caseName = $case->name;
+                $caseValue = $case->value;
+                $typeScriptEnumCases[] = "{$caseName} = '{$caseValue}'";
+            }
+
+            $enums[] = "export enum {$enumName} {\n    " . implode(",\n    ", $typeScriptEnumCases) . "\n}";
         }
     }
 }
 
-file_put_contents($outputFile, implode("\n\n", $types));
+file_put_contents($outputFile, implode("\n\n", array_merge($types, $enums)));
 
-echo "TypeScript types generated in {$outputFile}\n";
+echo "TypeScript types and enums generated in {$outputFile}\n";

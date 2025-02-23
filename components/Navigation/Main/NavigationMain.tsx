@@ -49,6 +49,10 @@ const NavigationMain : React.FC<{
                 >Home</Button>}
                 {controller.isLoggedIn && <Button 
                     color="inherit"
+                    href="/gift-requests"
+                >Gift Requests</Button>}
+                {controller.isLoggedIn && <Button 
+                    color="inherit"
                     onClick={handleLogOut}
                 >Logout</Button> }
             </div>
