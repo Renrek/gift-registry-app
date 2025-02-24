@@ -9,15 +9,24 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ConnectionFormatter
 {
-  
     public function __construct(
         private UrlGeneratorInterface $urlGenerator,
     ){}
 
+    /**
+     * Converts a Connection model to an array.
+     *
+     * @param Connection $connection The Connection model.
+     * @return array<string, mixed> The formatted connection data.
+     */
     public function fromModel(Connection $connection): array
     {
         $user = $connection->getUser();
         $connectedUser = $connection->getConnectedUser();
+
+        if (!$user) {
+            throw new \LogicException('The user is not an instance of User.');
+        }
 
         return [
             'id' => $connection->getId(),

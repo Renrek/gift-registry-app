@@ -8,6 +8,9 @@ use App\Attributes\DTO;
 #[DTO]
 class ConnectionPanelConfig
 {
+    /**
+     * @param ConnectionPanelItemDTO[] $connectedUsers
+     */
     public function __construct(
         public string $searchUrl,
         public string $addUrl,

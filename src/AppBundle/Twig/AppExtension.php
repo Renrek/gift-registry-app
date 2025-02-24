@@ -50,7 +50,12 @@ class AppExtension extends AbstractExtension
         array $data = []
     ) : Markup {
         
-        $parameters = $data !== false ?base64_encode(json_encode($data)) : '';
+        $jsonEncodedData = json_encode($data);
+        if ($jsonEncodedData === false) {
+            throw new \RuntimeException('Failed to encode data to JSON.');
+        }
+
+        $parameters = base64_encode($jsonEncodedData);
 
         return new Markup('<div class="react-component" data-component="'
             .$componentName
@@ -62,9 +67,11 @@ class AppExtension extends AbstractExtension
     {
         $styles= '';
         $files = scandir($this->projectDirectory.'/public/assets');
-        foreach ($files as $file){
-            if(str_starts_with($file, 'main.') && str_ends_with($file, '.css')){
-                $styles .= '<link rel="stylesheet" href="/assets/'.$file.'">';
+        if ($files !== false) {
+            foreach ($files as $file){
+                if(str_starts_with($file, 'main.') && str_ends_with($file, '.css')){
+                    $styles .= '<link rel="stylesheet" href="/assets/'.$file.'">';
+                }
             }
         }
         return new Markup($styles, 'UTF-8');
@@ -74,12 +81,12 @@ class AppExtension extends AbstractExtension
     {
         $scripts = '';
         $files = scandir($this->projectDirectory.'/public/assets');
-        foreach ($files as $file){
-            //if(str_starts_with($file, 'main.') && str_ends_with($file, '.js')){
-            if ($file !== '.' && $file != '..') {
-                $scripts .= '<script src="/assets/'.$file.'"></script>';
+        if ($files !== false) {
+            foreach ($files as $file){
+                if ($file !== '.' && $file != '..') {
+                    $scripts .= '<script src="/assets/'.$file.'"></script>';
+                }
             }
-            //}
         }
         return new Markup($scripts, 'UTF-8');
     }

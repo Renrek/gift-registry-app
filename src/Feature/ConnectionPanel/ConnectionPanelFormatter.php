@@ -34,15 +34,19 @@ class ConnectionPanelFormatter
 
     public function fromModels(Connection $connection): ConnectionPanelItemDTO
     {
-
         $user = $this->security->getUser();
 
-        if (!$user instanceof User) {
+        if (!$user instanceof User || $user == null) {
             throw new \LogicException('The user is not logged in or is not an instance of User.');
         }
-        
-        $status = $connection->isConfirmed() ? ConfirmStatus::CONFIRMED  : ConfirmStatus::NOT_CONFIRMED;
+
+        if ($connection->getUser() === null || $connection->getConnectedUser() === null) {
+            throw new \LogicException('The connection does not have a user or connected user.');
+        }
+
         $isConnectionInitiator = $connection->getUser()->getId() === $user->getId();
+
+        $status = $connection->isConfirmed() ? ConfirmStatus::CONFIRMED : ConfirmStatus::NOT_CONFIRMED;
         if ($isConnectionInitiator) {
             // If the user is the initiator of the connection, the status is pending if the connection is not confirmed.
             if (!$connection->isConfirmed()) {
@@ -53,12 +57,10 @@ class ConnectionPanelFormatter
             $connectedUser = $connection->getUser();
         }
 
-
-
         return new ConnectionPanelItemDTO(
-            id: $connection->getId(),
-            userId: $connectedUser->getId(),
-            email: $connectedUser->getEmail(),
+            id: $connection->getId() ?? 0,
+            userId: $connectedUser->getId() ?? 0,
+            email: $connectedUser->getEmail() ?? '',
             status: $status,
             confirmUrl: $this->urlGenerator->generate('confirm_connection', ['connectionId' => $connection->getId()]),
             deleteUrl: $this->urlGenerator->generate('delete_connection', ['connectionId' => $connection->getId()]),

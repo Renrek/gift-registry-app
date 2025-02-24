@@ -42,7 +42,7 @@ class ConnectionController extends AbstractController
 
         $emailPartial = $request->query->get('emailPartial', '');
         
-        if (!$emailPartial || trim($emailPartial) === '') {
+        if (!is_string($emailPartial) || trim($emailPartial) === '') {
             return $this->json(['error' => 'Nothing provided to lookup.'], 400);
         }
 
@@ -52,8 +52,8 @@ class ConnectionController extends AbstractController
 
         $connections = $connectionRepository->getAllConnections($user);
         
-        $connectionIds = array_map(fn($c) => $c->getConnectedUser()->getId(), $connections);
-        $inverseConnectionIds = array_map(fn($c) => $c->getUser()->getId(), $connections);
+        $connectionIds = array_map(fn($c) => $c->getConnectedUser()?->getId(), $connections);
+        $inverseConnectionIds = array_map(fn($c) => $c->getUser()?->getId(), $connections);
         $allConnectionIds = array_unique(array_merge($connectionIds, $inverseConnectionIds));
         
         $remainingUsers = array_values(array_filter($users, fn($u) => !in_array($u->getId(), $allConnectionIds)));
@@ -67,11 +67,9 @@ class ConnectionController extends AbstractController
     public function add(
         Request $request, 
         EntityManagerInterface $entityManager,
-        Security $security
+        #[CurrentUser] ?User $user
     ): Response {
         
-        $user = $security->getUser();
-
         if (!$user) {
             throw new AccessDeniedException('You must be logged in to confirm a connection.');
         }
@@ -80,7 +78,7 @@ class ConnectionController extends AbstractController
         
         $connectedUser = $entityManager->getRepository(User::class)->find($payload->id);
 
-        if (!$user || !$connectedUser) {
+        if (!$connectedUser) {
             return new Response('User not found', Response::HTTP_NOT_FOUND);
         }
 
@@ -117,7 +115,7 @@ class ConnectionController extends AbstractController
         }
 
         // Ensure the user is the connected user in the connection and not the initiator
-        if ($connection->getConnectedUser()->getId() !== $user->getId()) {
+        if ($connection->getConnectedUser()?->getId() !== $user->getId()) {
             return new Response('You are not authorized to confirm this connection', Response::HTTP_FORBIDDEN);
         }
 

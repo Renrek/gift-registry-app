@@ -45,8 +45,8 @@ class GiftRequestController extends AbstractController
         $giftData = $giftFormatter->newGiftRequest(($request));
 
         $newGiftRequest = new GiftRequest();
-        $newGiftRequest->setName($giftData->name);
-        $newGiftRequest->setDescription($giftData->description);
+        $newGiftRequest->setName((string) $giftData->name);
+        $newGiftRequest->setDescription((string) $giftData->description);
         $newGiftRequest->setOwner($user);
         $newGiftRequest->setFulfilled(false);
 
@@ -92,8 +92,8 @@ class GiftRequestController extends AbstractController
         
         $giftRequest = $entityManager->getRepository(GiftRequest::class)->findOrFail($id);
         
-        $giftRequest->setName($request->request->get('name'));
-        $giftRequest->setDescription($request->request->get('description'));
+        $giftRequest->setName((string) $request->request->get('name'));
+        $giftRequest->setDescription((string) $request->request->get('description'));
 
         $entityManager->flush();
 
@@ -110,6 +110,10 @@ class GiftRequestController extends AbstractController
     ): Response {
         
         $giftRequest = $entityManager->getRepository(GiftRequest::class)->find($id);
+
+        if (!$giftRequest) {
+            throw new EntityNotFoundException('Gift Request not found');
+        }
 
         $entityManager->remove($giftRequest);
         $entityManager->flush();

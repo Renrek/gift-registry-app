@@ -9,6 +9,9 @@ use App\Controller\Web\Invitation\DTOs\InvitationListItemDTO;
 #[DTO]
 class InvitationPanelConfig
 {
+    /**
+     * @param InvitationListItemDTO[] $invitationList
+     */
     public function __construct(
         public string $createInvitationUrl,
         #[ArrayOf(InvitationListItemDTO::class)]

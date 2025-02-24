@@ -15,14 +15,14 @@ class GiftRequestFormatter
     ){}
 
     /**
-     * Converts a GiftRequest model to a GiftRequestListItemDTO.
+     * Converts a GiftRequest model to a GiftRequestDTO.
      */
     public function fromModel(GiftRequest $giftRequest): GiftRequestDTO
     {
         return new GiftRequestDTO(
-            id: $giftRequest->getId(),
-            name: $giftRequest->getName(),
-            description: $giftRequest->getDescription(),
+            id: $giftRequest->getId() ?? 0,
+            name: $giftRequest->getName() ?? '',
+            description: $giftRequest->getDescription() ?? '',
             editPath: $this->urlGenerator->generate('edit_gift_request', ['id' => $giftRequest->getId()]),
             deletePath: $this->urlGenerator->generate('delete_gift_request', ['id' => $giftRequest->getId()]),
         );
@@ -32,7 +32,7 @@ class GiftRequestFormatter
      * Converts a list of GiftRequest models to an array.
      *
      * @param GiftRequest[] $giftRequests An array of GiftRequest models.
-     * @return GiftRequestListItemDTO[]
+     * @return GiftRequestDTO[]
      */
     public function fromModelList(array $giftRequests): array
     {
@@ -49,8 +49,8 @@ class GiftRequestFormatter
         $payload = json_decode($request->getContent(), false);
 
         return new NewGiftRequestDTO(
-            name: $payload->name,
-            description: $payload->description,
+            name: $payload->name ?? '',
+            description: $payload->description ?? '',
         );
     }
 
@@ -59,11 +59,11 @@ class GiftRequestFormatter
         $payload = json_decode($request->getContent(), false);
 
         return new GiftRequestDTO(
-            id: $payload->id,
-            name: $payload,
-            description: $payload->description,
-            editPath: $payload->editPath,
-            deletePath: $payload->deletePath,
+            id: $payload->id ?? 0,
+            name: $payload->name ?? '',
+            description: $payload->description ?? '',
+            editPath: $payload->editPath ?? '',
+            deletePath: $payload->deletePath ?? '',
         );
     }
 }
