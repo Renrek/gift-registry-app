@@ -2,11 +2,11 @@
 
 namespace App\Controller\Web\Profile;
 
-use App\Controller\Web\Invitation\InvitationFormatter;
 use App\Entity\User;
 use App\Feature\ConnectionPanel\DTO\ConnectionPanelConfig;
 use App\Feature\ConnectionPanel\Formatter\ConnectionPanelFormatter;
 use App\Feature\InvitationPanel\DTOs\InvitationPanelConfig;
+use App\Formatter\Invitation\InvitationFormatter;
 use App\Repository\ConnectionRepository;
 use App\Repository\InvitationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,7 +34,7 @@ class ProfileController extends AbstractController
         $invitationList = $invitationFormatter->fromModels($invitations);
 
         $invitationConfig = new InvitationPanelConfig(
-            createInvitationUrl: $this->generateUrl('create_invitation'),
+            createInvitationUrl: $this->generateUrl('api_v1_create_invitation'),
             invitationList: $invitationList,
         );
 

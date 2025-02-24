@@ -2,7 +2,7 @@
 
 namespace App\Controller\Rest\v1\Connection;
 
-use App\Controller\Web\User\UserFormatter;
+use App\Formatter\User\UserFormatter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

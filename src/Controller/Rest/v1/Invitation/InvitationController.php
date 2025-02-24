@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\Web\Invitation;
+namespace App\Controller\Rest\v1\Invitation;
 
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,10 +11,10 @@ use App\Entity\User;
 use App\Service\InvitationService;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(path:'/invitations')]
+#[Route(path:'/api/v1/invitations')]
 class InvitationController extends AbstractController
 {
-    #[Route(path: '/create', methods: ['POST'], name: 'create_invitation')]
+    #[Route(path: '/create', methods: ['POST'], name: 'api_v1_create_invitation')]
     public function create(Request $request, InvitationService $invitationService): Response
     {
         $user = $this->getUser();

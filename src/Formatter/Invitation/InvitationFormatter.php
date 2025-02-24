@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\Web\Invitation;
+namespace App\Formatter\Invitation;
 
-use App\Controller\Web\Invitation\DTOs\InvitationListItemDTO;
+use App\DTO\Invitation\InvitationListItemDTO;
 
 class InvitationFormatter
 {

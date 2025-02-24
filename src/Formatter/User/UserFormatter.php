@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\Web\User;
+namespace App\Formatter\User;
 
 use App\DTO\User\UserDTO;
 use App\Entity\User;

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\Web\Invitation\DTOs;
+namespace App\DTO\Invitation;
 
 use App\Attributes\DTO;
 
