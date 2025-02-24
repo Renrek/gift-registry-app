@@ -71,7 +71,7 @@ class AuthRegistrationFormController {
     }
 
     public submitNewUser = () => {
-        axios.post('/registration/create', {
+        axios.post('/api/v1/registration/create', {
             email: this.email,
             password: this.password,
             invitationCode: this.inviteCode

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\Web\Auth;
+namespace App\Controller\Rest\v1\Login;
 
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\Response;
@@ -9,9 +9,10 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
-class ApiLoginController extends AbstractController
+#[Route(path: '/api/v1/login')]
+class LoginController extends AbstractController
 {
-    #[Route(path: '/api/login', methods: 'POST', name: 'api_login')]
+    #[Route(path: '', methods: 'POST', name: 'api_v1_login')]
     public function index(#[CurrentUser] ?User $user): Response
     {
         if(null === $user) {

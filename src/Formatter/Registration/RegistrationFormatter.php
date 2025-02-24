@@ -1,17 +1,17 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\Web\Auth\DTOs;
+namespace App\Formatter\Registration;
 
-use App\Controller\Web\Auth\DTOs\UserRegistrationRequestDTO;
+use App\DTO\Registration\RegistrationRequestDTO;
 use Symfony\Component\HttpFoundation\Request;
 
-class UserRegistrationFormatter
+class RegistrationFormatter
 {
-    public function fromRequest(Request $request): UserRegistrationRequestDTO
+    public function fromRequest(Request $request): RegistrationRequestDTO
     {
         $payload = json_decode($request->getContent(), false);
         
-        return new UserRegistrationRequestDTO(
+        return new RegistrationRequestDTO(
             email: $payload->email,
             password: $payload->password,
             invitationCode: $payload->invitationCode,

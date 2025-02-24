@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\Web\Auth\DTOs;
+namespace App\DTO\Registration;
 
-class UserRegistrationRequestDTO
+class RegistrationRequestDTO
 {
     public function __construct(
         public string $email,

@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\Web\Auth;
+namespace App\Controller\Rest\v1\Registration;
 
-use App\Controller\Web\Auth\DTOs\UserRegistrationFormatter;
 use App\Entity\Connection;
 use App\Entity\Invitation;
 use App\Entity\User;
+use App\Formatter\Registration\RegistrationFormatter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,22 +13,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route(path: '/registration', methods: 'GET')]
+#[Route(path: '/api/v1/registration')]
 class RegistrationController extends AbstractController
 {
-    #[Route(path: '', methods: 'GET')]
-    public function index(): Response
-    {
-        return $this->render('registration/index.html.twig', []);
-    }
-
-
+    
     #[Route(path: '/create', methods: 'POST')]
     public function handleRegistration(
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager,
-        UserRegistrationFormatter $registrationFormatter,
+        RegistrationFormatter $registrationFormatter,
     ): Response {
         $userData = $registrationFormatter->fromRequest($request);
         $invitationCode = $userData->invitationCode;
@@ -64,8 +58,8 @@ class RegistrationController extends AbstractController
         $connection->setConnectedUser($user);
         $connection->setConfirmed(true);
 
-    $entityManager->persist($connection);
-    $entityManager->flush();
+        $entityManager->persist($connection);
+        $entityManager->flush();
 
         return new Response('User registered successfully', Response::HTTP_CREATED);
     }
