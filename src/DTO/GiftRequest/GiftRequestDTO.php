@@ -1,14 +1,17 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\Web\GiftRequest\DTOs;
+namespace App\DTO\GiftRequest;
 
 use App\Attributes\DTO;
 
 #[DTO]
-class NewGiftRequestDTO
+class GiftRequestDTO
 {
     public function __construct(
+        public int $id,
         public string $name,
         public string $description,
+        public string $editPath,
+        public string $deletePath,
     ) {}
 }

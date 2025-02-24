@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\Web\GiftRequest;
+namespace App\Formatter\GiftRequest;
 
-use App\Controller\Web\GiftRequest\DTOs\GiftRequestDTO;
-use App\Controller\Web\GiftRequest\DTOs\NewGiftRequestDTO;
+use App\DTO\GiftRequest\GiftRequestDTO;
+use App\DTO\GiftRequest\NewGiftRequestDTO;
 use App\Entity\GiftRequest;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -24,7 +24,7 @@ class GiftRequestFormatter
             name: $giftRequest->getName() ?? '',
             description: $giftRequest->getDescription() ?? '',
             editPath: $this->urlGenerator->generate('edit_gift_request', ['id' => $giftRequest->getId()]),
-            deletePath: $this->urlGenerator->generate('delete_gift_request', ['id' => $giftRequest->getId()]),
+            deletePath: $this->urlGenerator->generate('api_v1_delete_gift_request', ['id' => $giftRequest->getId()]),
         );
     }
 
