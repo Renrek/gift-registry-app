@@ -2,7 +2,7 @@
 
 namespace App\Controller\Web\User;
 
-use App\Controller\Web\User\DTOs\UserDTO;
+use App\DTO\User\UserDTO;
 use App\Entity\User;
 use DomainException;
 
