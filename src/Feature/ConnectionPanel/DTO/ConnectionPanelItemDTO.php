@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace App\Feature\ConnectionPanel\DTOs;
+namespace App\Feature\ConnectionPanel\DTO;
 
 use App\Attributes\DTO;
-use App\Feature\ConnectionPanel\Enums\ConfirmStatus;
+use App\Feature\ConnectionPanel\Enum\ConfirmStatus;
 
 #[DTO]
 class ConnectionPanelItemDTO

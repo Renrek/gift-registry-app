@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\Web\Connection;
+namespace App\Controller\Rest\v1\Connection;
 
 use App\Controller\Web\User\UserFormatter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,14 +17,14 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
-#[Route(path:'/connections')]
+#[Route(path:'/api/v1/connections')]
 class ConnectionController extends AbstractController
 {
     public function __construct(
         public ConnectionService $connectionService,
     ){}
 
-    #[Route(path: '/search', methods: ['GET'], name: 'search_connections')]
+    #[Route(path: '/search', methods: ['GET'], name: 'api_v1_search_connections')]
     public function search( 
         Request $request,
         UserRepository $userRepository,
@@ -63,7 +63,7 @@ class ConnectionController extends AbstractController
         return $this->json($remainingUsers, 200);
     }
 
-    #[Route(path:'/add', methods: ['POST'], name: 'add_connection')]
+    #[Route(path:'/add', methods: ['POST'], name: 'api_v1_add_connection')]
     public function add(
         Request $request, 
         EntityManagerInterface $entityManager,
@@ -97,7 +97,7 @@ class ConnectionController extends AbstractController
         return new Response('Connection added successfully', Response::HTTP_CREATED);
     }
 
-    #[Route(path:'/{connectionId}/confirm', methods: ['POST'], name: 'confirm_connection')]
+    #[Route(path:'/{connectionId}/confirm', methods: ['POST'], name: 'api_v1_confirm_connection')]
     public function confirm(
         int $connectionId, 
         #[CurrentUser] ?User $user,
@@ -126,7 +126,7 @@ class ConnectionController extends AbstractController
         return new Response('Connection confirmed successfully', Response::HTTP_OK);
     }
 
-    #[Route(path:'/{connectionId}/delete', methods: ['DELETE'], name: 'delete_connection')]
+    #[Route(path:'/{connectionId}/delete', methods: ['DELETE'], name: 'api_v1_delete_connection')]
     public function delete(
         int $connectionId, 
         EntityManagerInterface $entityManager,

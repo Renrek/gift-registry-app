@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Feature\ConnectionPanel\DTOs;
+namespace App\Feature\ConnectionPanel\DTO;
 
 use App\Attributes\ArrayOf;
 use App\Attributes\DTO;

@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace App\Feature\ConnectionPanel;
+namespace App\Feature\ConnectionPanel\Formatter;
 
 use App\Entity\Connection;
 use App\Entity\User;
-use App\Feature\ConnectionPanel\DTOs\ConnectionPanelItemDTO;
-use App\Feature\ConnectionPanel\Enums\ConfirmStatus;
+use App\Feature\ConnectionPanel\DTO\ConnectionPanelItemDTO;
+use App\Feature\ConnectionPanel\Enum\ConfirmStatus;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -62,8 +62,8 @@ class ConnectionPanelFormatter
             userId: $connectedUser->getId() ?? 0,
             email: $connectedUser->getEmail() ?? '',
             status: $status,
-            confirmUrl: $this->urlGenerator->generate('confirm_connection', ['connectionId' => $connection->getId()]),
-            deleteUrl: $this->urlGenerator->generate('delete_connection', ['connectionId' => $connection->getId()]),
+            confirmUrl: $this->urlGenerator->generate('api_v1_confirm_connection', ['connectionId' => $connection->getId()]),
+            deleteUrl: $this->urlGenerator->generate('api_v1_delete_connection', ['connectionId' => $connection->getId()]),
         );
     }
 }

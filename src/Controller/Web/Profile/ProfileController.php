@@ -2,18 +2,13 @@
 
 namespace App\Controller\Web\Profile;
 
-use App\Controller\Web\Connection\ConnectionFormatter;
 use App\Controller\Web\Invitation\InvitationFormatter;
-use App\Controller\Web\User\DTOs\UserDTO;
 use App\Entity\User;
-use App\Feature\ConnectionPanel\ConnectionPanelFormatter;
-use App\Feature\ConnectionPanel\DTOs\ConnectionPanelConfig;
+use App\Feature\ConnectionPanel\DTO\ConnectionPanelConfig;
+use App\Feature\ConnectionPanel\Formatter\ConnectionPanelFormatter;
 use App\Feature\InvitationPanel\DTOs\InvitationPanelConfig;
 use App\Repository\ConnectionRepository;
 use App\Repository\InvitationRepository;
-use App\Service\ConnectionService;
-use Doctrine\ORM\EntityNotFoundException;
-use FTP\Connection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -46,8 +41,8 @@ class ProfileController extends AbstractController
         $connections = $connectionRepository->findByUser($user);
 
         $connectionConfig = new ConnectionPanelConfig(
-            searchUrl: $this->generateUrl('search_connections'),
-            addUrl: $this->generateUrl('add_connection'),
+            searchUrl: $this->generateUrl('api_v1_search_connections'),
+            addUrl: $this->generateUrl('api_v1_add_connection'),
             connectedUsers: $connectionPanelFormatter->fromModelList($connections),
         );
         

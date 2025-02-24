@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Feature\ConnectionPanel\Enums;
+namespace App\Feature\ConnectionPanel\Enum;
 
 use App\Attributes\DTOEnum;
 
