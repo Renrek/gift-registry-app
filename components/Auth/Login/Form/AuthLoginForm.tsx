@@ -51,7 +51,7 @@ class AuthLoginFormController {
 
     @action
     public submit = (): void => {
-        axios.post('/api/login', {
+        axios.post('/api/v1/login', {
             username: this.email,
             password: this.password
         }).then((res) => {

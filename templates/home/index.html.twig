@@ -2,10 +2,14 @@
 {% block body %}
     <div style="padding:2em;">
         <h2>Home Page</h2>
-        {% if isLoggedin == false %}
-            {{loadComponent('login-form', [isLoggedin])}}
-        {% else %}
-            Logged In
-        {% endif %}
+            
+        <div style="display: flex; flex-direction: column; padding: 2em;">
+            <div style="margin-bottom: 2em;">
+                {{ loadComponent('invitation-panel', [invitationConfig]) }}
+            </div>
+            <div style="">
+                {{ loadComponent('connection-panel', [connectionConfig]) }}
+            </div>
+        </div>
     </div>
 {% endblock body %}
