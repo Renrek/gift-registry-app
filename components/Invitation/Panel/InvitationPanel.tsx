@@ -7,6 +7,7 @@ import { makeObservable, observable } from 'mobx';
 import { InvitationListItemDTO, InvitationPanelConfig } from '../../types';
 import { DataGrid, GridColDef, GridColumnVisibilityModel, GridDensity, GridToolbar } from '@mui/x-data-grid';
 import { BooleanChip } from '../../BooleanChip/BooleanChip';
+import { Button } from '@mui/material';
 
 registerComponent('invitation-panel', (element, parameters) => {  
     const [ config ] = parameters;
@@ -29,45 +30,53 @@ class InvitationPanelController {
 }
 
 const InvitationPanel: React.FC<{controller: InvitationPanelController}> = observer(({controller}) => {
-    const [columnVisibilityModel, setColumnVisibilityModel] = React.useState<GridColumnVisibilityModel>({
-        code: false
-    });
+    // const [columnVisibilityModel, setColumnVisibilityModel] = React.useState<GridColumnVisibilityModel>({
+    //     code: false
+    // });
     
     const invitationList = controller.invitationList;
     
     const columns: GridColDef[] = [
-        { field: 'email', headerName: 'Email', width: 200, },
-        { field: 'isUsed', headerName: 'Status', width: 200 },
-        { field: 'code', headerName: 'Code', width: 200}
+        { field: 'email', headerName: 'Email', flex: 1 },
+        { field: 'code', headerName: 'Code', flex: 2 },
+        { field: 'copy', headerName: 'Copy', flex: 1 },
     ];
 
-    columns[1].renderCell = (params) => {
-        return <BooleanChip 
-            value={params.row.isUsed} 
-            trueConfig={{color: 'success', text: 'Used'}}
-            falseConfig={{color: 'warning', text: 'Unused'}}
-        />
+    // columns[1].renderCell = (params) => {
+    //     return <BooleanChip 
+    //         value={params.row.isUsed} 
+    //         trueConfig={{color: 'success', text: 'Used'}}
+    //         falseConfig={{color: 'warning', text: 'Unused'}}
+    //     />
+    // };
+
+    columns[2].renderCell = (params) => {
+        return <Button onClick={() => {
+            if (document.hasFocus()) {
+                navigator.clipboard.writeText(params.row.code);
+            } else {
+                window.focus();
+                setTimeout(() => {
+                    navigator.clipboard.writeText(params.row.code);
+                }, 100);
+            }
+        }}>Copy Code</Button>
     };
 
     return <>
-        <h4>Invitation Panel</h4>
+        <h4>Invitations</h4>
         <div style={{marginBottom: '1em'}}>
-        <InviteDialog controller={new InvitationDialogController(controller.config.createInvitationUrl)} />
+            <InviteDialog controller={new InvitationDialogController(controller.config.createInvitationUrl)} />
         </div>
         {invitationList.length === 0 && <p>No invitations have been currently placed.</p>}
         {invitationList.length > 0 && <DataGrid
             rows = {controller.invitationList}
             columns={columns}
             getRowId={(row) => row.id}
-            slots={{ toolbar: GridToolbar}}
-            columnVisibilityModel={columnVisibilityModel}
-            onColumnVisibilityModelChange={(newModel) => setColumnVisibilityModel(newModel)}
+            // columnVisibilityModel={columnVisibilityModel}
+            // onColumnVisibilityModelChange={(newModel) => setColumnVisibilityModel(newModel)}
             initialState={{
                 density: 'compact' as GridDensity,
-                sorting: {
-                    sortModel: [{ field: 'isUsed', sort: 'asc' }],
-                },
-                
             }}
         />}
     </>

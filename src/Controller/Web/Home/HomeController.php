@@ -39,7 +39,10 @@ class HomeController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        $invitations = $invitationRepository->findBy(['inviter' => $user->getId()]);
+        $invitations = $invitationRepository->findBy([
+            'inviter' => $user->getId(),
+            'used' => false,
+        ]);
         $invitationList = $invitationFormatter->fromModels($invitations);
 
         $invitationConfig = new InvitationPanelConfig(

@@ -3,7 +3,7 @@ import * as ReactDOMClient from 'react-dom/client';
 import { registerComponent } from '../../component.loader';
 import { action, makeObservable, observable, runInAction } from 'mobx';
 import { ConfirmStatus, ConnectionPanelConfig, ConnectionPanelItemDTO } from '../../types';
-import { DataGrid, GridColDef, GridDensity } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridDensity, GridToolbar } from '@mui/x-data-grid';
 import { Button } from '@mui/material';
 import { ConnectionFormDialog, ConnectionFormDialogController } from '../FormDialog/ConnectionFormDialog';
 import axios from 'axios';
@@ -57,20 +57,19 @@ const ConnectionPanel: React.FC<{controller: ConnectionPanelController}> = ({
 }) => {
 
     const columns: GridColDef[] = [
-        { field: 'id', headerName: 'ID', width: 200 },
-        { field: 'email', headerName: 'Contact', width: 200 },
-        { field: 'manage', headerName: 'Manage', width: 200 },
-        { field: 'view', headerName: 'View', width: 200 },
+        { field: 'email', headerName: 'Contact', flex: 1 },
+        { field: 'manage', headerName: 'Manage', flex: 1 },
     ];
 
-    columns[2].renderCell = (params) => {
+    columns[1].renderCell = (params) => {
         if (params.row.status === ConfirmStatus.CONFIRMED) {
-            return <p>Confirmed</p>
+            return <Button >View</Button>
         } else if (params.row.status === ConfirmStatus.PENDING) {
             return <p>Pending</p>
         } else {
             return <Button 
-                variant="contained" 
+                variant="outlined"
+                size="small" 
                 color="primary"
                 onClick={() => { controller.addConnection(params.row.confirmUrl, params.row.id) } }
             >
@@ -79,16 +78,18 @@ const ConnectionPanel: React.FC<{controller: ConnectionPanelController}> = ({
         }
     };
 
-    columns[3].renderCell = (params) => {
-        return <Button variant="contained" color="secondary">View</Button>
-    };
-
+    
     return <>
+        <h4>Contacts</h4>
+        <div style={{marginBottom: '1em'}}>
         <ConnectionFormDialog controller={controller.formController} />
-        <DataGrid 
-            rows={controller.connectedUsers}
+        </div>
+        {controller.connectedUsers.length === 0 && <p>No Contacts Found.</p>}
+        {controller.connectedUsers.length > 0 && <DataGrid
+            rows = {controller.connectedUsers}
             columns={columns}
             getRowId={(row) => row.id}
+            slots={{ toolbar: GridToolbar}}
             initialState={{
                 density: 'compact' as GridDensity,
                 sorting: {
@@ -96,6 +97,6 @@ const ConnectionPanel: React.FC<{controller: ConnectionPanelController}> = ({
                 },
                 
             }}
-        />
+        />}
     </>
 };
