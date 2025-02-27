@@ -76,7 +76,15 @@ module.exports = (env) => {
                     use: [
                         isProduction ? MiniCssExtractPlugin.loader : "style-loader", 
                         "css-loader", 
-                        "sass-loader"
+                        {
+                            loader: "sass-loader",
+                            options: {
+                                implementation: require("sass"),
+                                sassOptions: {
+                                    fiber: false,
+                                },
+                            },
+                        },
                     ]
                 },
                 {
