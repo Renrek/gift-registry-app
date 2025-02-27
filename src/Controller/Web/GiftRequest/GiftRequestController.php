@@ -30,7 +30,7 @@ class GiftRequestController extends AbstractController
         $giftRequests = $user->getGiftRequests()->toArray();
         
         return $this->render('gift-request/index.html.twig', [
-            'giftRequests' => $giftRequestFormatter->fromModelList($giftRequests),
+            'giftRequests' => $giftRequestFormatter->fromEntityList($giftRequests),
             'addGiftRequestURL' => $this->generateUrl('api_v1_add_gift_request'),
         ]);
     }
@@ -54,7 +54,7 @@ class GiftRequestController extends AbstractController
 
         return $this->render('gift-request/edit/edit.html.twig', [
             'updateURL' => $this->generateUrl('api_v1_update_gift_request', ['id' => $giftRequest->getId()]),
-            'giftRequest' => $giftFormatter->fromModel($giftRequest),
+            'giftRequest' => $giftFormatter->fromEntity($giftRequest),
         ]);
     }
 }

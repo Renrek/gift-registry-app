@@ -17,7 +17,7 @@ class GiftRequestFormatter
     /**
      * Converts a GiftRequest model to a GiftRequestDTO.
      */
-    public function fromModel(GiftRequest $giftRequest): GiftRequestDTO
+    public function fromEntity(GiftRequest $giftRequest): GiftRequestDTO
     {
         return new GiftRequestDTO(
             id: $giftRequest->getId() ?? 0,
@@ -34,14 +34,9 @@ class GiftRequestFormatter
      * @param GiftRequest[] $giftRequests An array of GiftRequest models.
      * @return GiftRequestDTO[]
      */
-    public function fromModelList(array $giftRequests): array
+    public function fromEntityList(array $giftRequests): array
     {
-        $requests = [];
-        foreach ($giftRequests as $request) {
-            $requests[] = $this->fromModel($request);
-        }
-
-        return $requests;
+        return array_map(fn(GiftRequest $giftRequest) => $this->fromEntity($giftRequest), $giftRequests);
     }
 
     public function newGiftRequest(Request $request): NewGiftRequestDTO

@@ -11,23 +11,24 @@ class InvitationFormatter
      * @param array<int, \App\Entity\Invitation> $invitations
      * @return array<int, InvitationListItemDTO>
      */
-    public function fromModels(array $invitations): array
+    public function fromEntityList(array $invitations): array
     {
-        $requests = [];
-        foreach ($invitations as $invitation) {
+        return array_map(fn(\App\Entity\Invitation $invitation) => 
+            $this->fromEntity($invitation), $invitations
+        );
+    }
 
-            if (!$invitation->getId() || !$invitation->getEmail() || !$invitation->getInvitationCode()) {
-                throw new \DomainException('Invitation must have an ID, email and code.');
-            }
-
-            $requests[] = new InvitationListItemDTO(
-                id: $invitation->getId(),
-                email: $invitation->getEmail(),
-                isUsed: $invitation->isUsed(),
-                code: $invitation->getInvitationCode(),
-            );
+    public function fromEntity(\App\Entity\Invitation $invitation): InvitationListItemDTO
+    {
+        if (!$invitation->getId() || !$invitation->getEmail() || !$invitation->getInvitationCode()) {
+            throw new \DomainException('Invitation must have an ID, email and code.');
         }
 
-        return $requests;
+        return new InvitationListItemDTO(
+            id: $invitation->getId(),
+            email: $invitation->getEmail(),
+            isUsed: $invitation->isUsed(),
+            code: $invitation->getInvitationCode(),
+        );
     }
 }

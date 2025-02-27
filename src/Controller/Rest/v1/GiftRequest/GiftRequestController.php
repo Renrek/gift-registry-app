@@ -36,7 +36,7 @@ class GiftRequestController extends AbstractController
         $entityManager->persist($newGiftRequest);
         $entityManager->flush();
 
-        return $this->json($giftFormatter->fromModel($newGiftRequest), Response::HTTP_CREATED);
+        return $this->json($giftFormatter->fromEntity($newGiftRequest), Response::HTTP_CREATED);
     }
 
     #[Route(

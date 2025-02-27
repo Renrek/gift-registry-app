@@ -26,12 +26,11 @@ class InvitationService
         $invitation->setEmail($email);
 
         $user = $this->security->getUser();
-        if ($user instanceof User) {
-            $invitation->setInviter($user);
-        } else {
-            $invitation->setInviter(null);
+        if (!$user instanceof User) {
+            throw new \LogicException('User must be logged in to create an invitation');
         }
-
+        
+        $invitation->setInviter($user);
         $invitation->setInvitationCode($this->uuidService->generateV1UUID());
 
         $this->entityManager->persist($invitation);

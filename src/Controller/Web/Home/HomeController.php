@@ -43,7 +43,7 @@ class HomeController extends AbstractController
             'inviter' => $user->getId(),
             'used' => false,
         ]);
-        $invitationList = $invitationFormatter->fromModels($invitations);
+        $invitationList = $invitationFormatter->fromEntityList($invitations);
 
         $invitationConfig = new InvitationPanelConfig(
             createInvitationUrl: $this->generateUrl('api_v1_create_invitation'),
