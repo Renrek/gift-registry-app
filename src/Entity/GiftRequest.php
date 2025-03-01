@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\GiftRequestRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
@@ -35,6 +37,17 @@ class GiftRequest
 
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $fulfilled = false;
+
+    #[ORM\Column(type: Types::INTEGER)]
+    private int $quantity = 1;
+
+    #[ORM\OneToMany(mappedBy: 'giftRequest', targetEntity: GiftClaim::class, cascade: ['persist', 'remove'])]
+    private Collection $claims;
+
+    public function __construct()
+    {
+        $this->claims = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -124,5 +137,57 @@ class GiftRequest
         $this->fulfilled = $fulfilled;
 
         return $this;
+    }
+
+    public function getQuantity(): int
+    {
+        return $this->quantity;
+    }
+
+    public function setQuantity(int $quantity): static
+    {
+        $this->quantity = $quantity;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, GiftClaim>
+     */
+    public function getClaims(): Collection
+    {
+        return $this->claims;
+    }
+
+    public function addClaim(GiftClaim $claim): static
+    {
+        if (!$this->claims->contains($claim)) {
+            $this->claims->add($claim);
+            $claim->setGiftRequest($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClaim(GiftClaim $claim): static
+    {
+        if ($this->claims->removeElement($claim)) {
+            // set the owning side to null (unless already changed)
+            if ($claim->getGiftRequest() === $this) {
+                $claim->setGiftRequest(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getTotalClaimedQuantity(): int
+    {
+        return array_reduce($this->claims->toArray(), fn($sum, $claim) => $sum + $claim->getQuantity(), 0);
+    }
+
+    public function isFullyClaimed(): bool
+    {
+        return $this->getTotalClaimedQuantity() >= $this->quantity;
     }
 }

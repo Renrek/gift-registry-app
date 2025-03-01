@@ -8,3 +8,4 @@ import "./GiftRequest/List/GiftRequestList";
 import "./Navigation/Main/NavigationMain";
 import "./Invitation/Panel/InvitationPanel";
 import "./Connection/Panel/ConnectionPanel";
+import "./GiftSelection/Panel/GiftSelectionPanel";

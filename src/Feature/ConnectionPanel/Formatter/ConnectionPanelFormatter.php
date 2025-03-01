@@ -64,6 +64,7 @@ class ConnectionPanelFormatter
             status: $status,
             confirmUrl: $this->urlGenerator->generate('api_v1_confirm_connection', ['connectionId' => $connection->getId()]),
             deleteUrl: $this->urlGenerator->generate('api_v1_delete_connection', ['connectionId' => $connection->getId()]),
+            viewUrl: $this->urlGenerator->generate('get_user_view', ['id' => $connectedUser->getId()]),
         );
     }
 }

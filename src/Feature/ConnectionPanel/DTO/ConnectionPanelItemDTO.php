@@ -15,5 +15,6 @@ class ConnectionPanelItemDTO
         public ConfirmStatus $status,
         public string $confirmUrl,
         public string $deleteUrl,
+        public string $viewUrl,
     ) {}
 }

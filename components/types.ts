@@ -28,6 +28,17 @@ export interface InvitationListItemDTO {
     code: string;
 }
 
+export interface GiftSelectionPanelConfig {
+    gifts: GiftSelectionPanelItemDTO[];
+}
+
+export interface GiftSelectionPanelItemDTO {
+    giftId: number;
+    name: string;
+    description: string;
+    claimUrl: string;
+}
+
 export interface InvitationPanelConfig {
     createInvitationUrl: string;
     invitationList: InvitationListItemDTO[];
@@ -46,6 +57,7 @@ export interface ConnectionPanelItemDTO {
     status: ConfirmStatus;
     confirmUrl: string;
     deleteUrl: string;
+    viewUrl: string;
 }
 
 export enum ConfirmStatus {

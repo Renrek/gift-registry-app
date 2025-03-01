@@ -63,7 +63,7 @@ const ConnectionPanel: React.FC<{controller: ConnectionPanelController}> = ({
 
     columns[1].renderCell = (params) => {
         if (params.row.status === ConfirmStatus.CONFIRMED) {
-            return <Button >View</Button>
+            return <Button href={params.row.viewUrl} >View</Button>
         } else if (params.row.status === ConfirmStatus.PENDING) {
             return <p>Pending</p>
         } else {
