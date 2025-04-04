@@ -43,6 +43,7 @@ class HomeController extends AbstractController
             'inviter' => $user->getId(),
             'used' => false,
         ]);
+        
         $invitationList = $invitationFormatter->forInvitationPanel($invitations);
 
         $invitationConfig = new InvitationPanelConfig(
