@@ -7,10 +7,8 @@ use App\Feature\GiftSelectionPanel\DTO\GiftSelectionPanelItemDTO;
 
 class GiftSelectionPanelFormatter
 {
-    /**
-     * Converts a list of GiftRequest entities to an array of formatted data.
-     *
-     * @param GiftRequest[] 
+    /** 
+     * @param GiftRequest[] $gifts
      * @return GiftSelectionPanelItemDTO[]
      */
     public function fromEntityList(array $gifts): array
@@ -23,17 +21,16 @@ class GiftSelectionPanelFormatter
         return $giftsArray;
     }
 
-    /**
-     * Converts a single GiftRequest entity to a formatted array.
-     *
-     * @param GiftRequest 
-     */
     public function fromEntity(GiftRequest $gift): GiftSelectionPanelItemDTO
     {
+        if (!$gift->getId()) {
+            throw new \InvalidArgumentException('No Gift ID provided');
+        }
+
         return new GiftSelectionPanelItemDTO(
             giftId: $gift->getId(),
-            name: $gift->getName(),
-            description: $gift->getDescription(),
+            name: $gift->getName() ?? '',
+            description: $gift->getDescription() ?? '',
             claimUrl: '',
         );
     }
