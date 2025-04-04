@@ -2,11 +2,11 @@
 
 namespace App\Controller\Web\User;
 
-use App\Controller\Web\User\DTOs\UserFormatter;
 use App\Entity\User;
 use App\Feature\GiftSelectionPanel\DTO\GiftSelectionPanelConfig;
 use App\Feature\GiftSelectionPanel\Formatter\GiftSelectionPanelFormatter;
 use App\Formatter\GiftRequest\GiftRequestFormatter;
+use App\Formatter\User\UserFormatter;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,12 +23,18 @@ class UserController extends AbstractController
         int $id,
         EntityManagerInterface $entityManager,
         GiftSelectionPanelFormatter $giftSelectionPanelFormatter,
+        UserFormatter $userFormatter,
     ): Response {
         if (!$this->getUser() instanceof User) {
             return new Response('User not authenticated', Response::HTTP_UNAUTHORIZED);
         }
 
         $user = $entityManager->getRepository(User::class)->find($id);
+
+        if ($user === null) {
+            throw new \LogicException('User must not be null.');
+        }
+        
         $giftRequests = $user->getGiftRequests()->toArray(); 
         
         $giftSelectionPanelConfig = new GiftSelectionPanelConfig(
@@ -36,6 +42,7 @@ class UserController extends AbstractController
         );
 
         return $this->render('user/view.html.twig', [
+            'user' => $userFormatter->fromEntity($user),
             'giftSelectionPanelConfig' => $giftSelectionPanelConfig,
         ]);
     }

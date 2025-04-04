@@ -41,6 +41,9 @@ class GiftRequest
     #[ORM\Column(type: Types::INTEGER)]
     private int $quantity = 1;
 
+    /**
+     * @var Collection<int, GiftClaim> A collection of GiftClaim entities
+     */
     #[ORM\OneToMany(mappedBy: 'giftRequest', targetEntity: GiftClaim::class, cascade: ['persist', 'remove'])]
     private Collection $claims;
 
