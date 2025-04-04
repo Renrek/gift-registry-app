@@ -43,7 +43,7 @@ class HomeController extends AbstractController
             'inviter' => $user->getId(),
             'used' => false,
         ]);
-        $invitationList = $invitationFormatter->fromEntityList($invitations);
+        $invitationList = $invitationFormatter->forInvitationPanel($invitations);
 
         $invitationConfig = new InvitationPanelConfig(
             createInvitationUrl: $this->generateUrl('api_v1_create_invitation'),
@@ -55,7 +55,7 @@ class HomeController extends AbstractController
         $connectionConfig = new ConnectionPanelConfig(
             searchUrl: $this->generateUrl('api_v1_search_connections'),
             addUrl: $this->generateUrl('api_v1_add_connection'),
-            connectedUsers: $connectionPanelFormatter->fromModelList($connections),
+            connectedUsers: $connectionPanelFormatter->forContactsPanel($connections),
         );
         
         return $this->render('home/index.html.twig', [ 

@@ -11,7 +11,7 @@ class InvitationFormatter
      * @param array<int, \App\Entity\Invitation> $invitations
      * @return array<int, InvitationListItemDTO>
      */
-    public function fromEntityList(array $invitations): array
+    public function forInvitationPanel(array $invitations): array
     {
         return array_map(fn(\App\Entity\Invitation $invitation) => 
             $this->fromEntity($invitation), $invitations

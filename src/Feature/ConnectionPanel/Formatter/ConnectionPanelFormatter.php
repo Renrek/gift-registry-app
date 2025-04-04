@@ -22,17 +22,17 @@ class ConnectionPanelFormatter
      * @param Connection[] $connections An array of Connection models.
      * @return ConnectionPanelItemDTO[]
      */
-    public function fromModelList(array $connections): array
+    public function forContactsPanel(array $connections): array
     {
         $requests = [];
         foreach ($connections as $connection) {
-            $requests[] = $this->fromModels($connection);
+            $requests[] = $this->fromEntity($connection);
         }
 
         return $requests;
     }
 
-    public function fromModels(Connection $connection): ConnectionPanelItemDTO
+    public function fromEntity(Connection $connection): ConnectionPanelItemDTO
     {
         $user = $this->security->getUser();
 
