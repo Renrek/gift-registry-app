@@ -2,40 +2,41 @@
 
 namespace App\Tests\Service;
 
+use PHPUnit\Framework\MockObject\MockObject;
+
 use App\Entity\Connection;
 use App\Entity\User;
 use App\Service\ConnectionService;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ObjectRepository;
+use Doctrine\ORM\EntityRepository;
 use PHPUnit\Framework\TestCase;
 
 class ConnectionServiceTest extends TestCase
 {
     public function testConnectionExistsReturnsTrueForDirectConnection(): void
     {
-        /** @var User&MockObject $user */
-        $user = $this->createMock(User::class);
-
-        /** @var User&MockObject $connectedUser */
-        $connectedUser = $this->createMock(User::class);
+        $user = new User();
+        $connectedUser = new User();
 
         $connection = $this->createMock(Connection::class);
 
-        $repository = $this->createMock(ObjectRepository::class);
+        $repository = $this->createMock(EntityRepository::class);
         $repository->expects($this->exactly(2))
             ->method('findOneBy')
-            ->withConsecutive(
-                [['user' => $user, 'connectedUser' => $connectedUser]],
-                [['user' => $connectedUser, 'connectedUser' => $user]]
-            )
+            ->with($this->callback(function ($arg) use ($user, $connectedUser) {
+                return (
+                    $arg === ['user' => $user, 'connectedUser' => $connectedUser] ||
+                    $arg === ['user' => $connectedUser, 'connectedUser' => $user]
+                );
+            }))
             ->willReturnOnConsecutiveCalls($connection, null);
 
-        $entityManager = $this->createMock(EntityManagerInterface::class);
+    
+    $entityManager = $this->createMock(EntityManagerInterface::class);
         $entityManager->method('getRepository')
             ->with(Connection::class)
             ->willReturn($repository);
 
-        /** @var EntityManagerInterface&MockObject $entityManager */
         $service = new ConnectionService($entityManager);
 
         $this->assertTrue($service->connectionExists($user, $connectedUser));
@@ -43,20 +44,23 @@ class ConnectionServiceTest extends TestCase
 
     public function testConnectionExistsReturnsTrueForInverseConnection(): void
     {
-        $user = $this->createMock(User::class);
-        $connectedUser = $this->createMock(User::class);
+    $user = new User();
+    $connectedUser = new User();
 
         $connection = $this->createMock(Connection::class);
 
-        $repository = $this->createMock(ObjectRepository::class);
+        $repository = $this->createMock(EntityRepository::class);
         $repository->expects($this->exactly(2))
             ->method('findOneBy')
-            ->withConsecutive(
-                [['user' => $user, 'connectedUser' => $connectedUser]],
-                [['user' => $connectedUser, 'connectedUser' => $user]]
-            )
+            ->with($this->callback(function ($arg) use ($user, $connectedUser) {
+                return (
+                    $arg === ['user' => $user, 'connectedUser' => $connectedUser] ||
+                    $arg === ['user' => $connectedUser, 'connectedUser' => $user]
+                );
+            }))
             ->willReturnOnConsecutiveCalls(null, $connection);
 
+        
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $entityManager->method('getRepository')
             ->with(Connection::class)
@@ -69,19 +73,22 @@ class ConnectionServiceTest extends TestCase
 
     public function testConnectionExistsReturnsFalseWhenNoConnection(): void
     {
-        $user = $this->createMock(User::class);
-        $connectedUser = $this->createMock(User::class);
+    $user = new User();
+    $connectedUser = new User();
 
-        $repository = $this->createMock(ObjectRepository::class);
+        $repository = $this->createMock(EntityRepository::class);
         $repository->expects($this->exactly(2))
             ->method('findOneBy')
-            ->withConsecutive(
-                [['user' => $user, 'connectedUser' => $connectedUser]],
-                [['user' => $connectedUser, 'connectedUser' => $user]]
-            )
+            ->with($this->callback(function ($arg) use ($user, $connectedUser) {
+                return (
+                    $arg === ['user' => $user, 'connectedUser' => $connectedUser] ||
+                    $arg === ['user' => $connectedUser, 'connectedUser' => $user]
+                );
+            }))
             ->willReturnOnConsecutiveCalls(null, null);
 
-        $entityManager = $this->createMock(EntityManagerInterface::class);
+    
+    $entityManager = $this->createMock(EntityManagerInterface::class);
         $entityManager->method('getRepository')
             ->with(Connection::class)
             ->willReturn($repository);
