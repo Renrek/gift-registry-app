@@ -6,8 +6,12 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-class Connection
+class Connection implements EntityInterface
 {
+    public function getEntityType(): EntityType
+    {
+        return EntityType::CONNECTION;
+    }
     
     #[ORM\Id]
     #[ORM\GeneratedValue]

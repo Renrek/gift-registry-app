@@ -11,9 +11,13 @@ use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 
 #[ORM\Entity(repositoryClass: GiftRequestRepository::class)]
 #[HasLifecycleCallbacks]
-class GiftRequest
+class GiftRequest implements EntityInterface
 {
-    
+    public function getEntityType(): EntityType
+    {
+        return EntityType::GIFT_REQUEST;
+    }
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

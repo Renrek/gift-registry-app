@@ -2,6 +2,7 @@
 
 namespace App\Controller\Rest\v1\GiftRequest;
 
+use App\DTO\GiftRequest\NewGiftRequestDTO;
 use App\Entity\User;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use App\Formatter\GiftRequest\GiftRequestFormatter;
@@ -30,47 +31,11 @@ class GiftRequestController extends AbstractController
         }
 
 
-        $imagePath = null;
-        $isJson = str_contains($request->headers->get('content-type', ''), 'application/json');
-        if ($isJson) {
-            $payload = json_decode($request->getContent(), false);
-            // Handle base64 image if present
-            if (!empty($payload->imageBase64)) {
-                $matches = [];
-                // Accept data URLs or plain base64
-                if (preg_match('/^data:image\/(\w+);base64,(.+)$/', $payload->imageBase64, $matches)) {
-                    $ext = $matches[1];
-                    $base64 = $matches[2];
-                } else {
-                    $ext = 'jpg';
-                    $base64 = $payload->imageBase64;
-                }
-                $data = base64_decode($base64);
-                $filename = uniqid('gift_', true) . '.' . $ext;
-                $subfolder = 'gift-images';
-                $uploadDir = $fileUploadService->getTargetDirectory() . DIRECTORY_SEPARATOR . $subfolder;
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0777, true);
-                }
-                file_put_contents($uploadDir . DIRECTORY_SEPARATOR . $filename, $data);
-                $imagePath = $subfolder . '/' . $filename;
-            }
-            $giftData = new \App\DTO\GiftRequest\NewGiftRequestDTO(
-                $payload->name ?? '',
-                $payload->description ?? '',
-                $imagePath
-            );
-        } else {
-            /** @var UploadedFile|null $imageFile */
-            $imageFile = $request->files->get('image');
-            if ($imageFile instanceof UploadedFile) {
-                $imagePath = $fileUploadService->upload($imageFile, 'gift-images');
-            }
-            $giftData = new \App\DTO\GiftRequest\NewGiftRequestDTO(
-                $request->request->get('name', ''),
-                $request->request->get('description', ''),
-                $imagePath
-            );
+        $giftData = $giftFormatter->newGiftRequest($request);
+
+        if (!empty($giftData->imageBase64)) {
+            $imagePath = $fileUploadService->saveBase64Image($giftData->imageBase64, 'gift-images');
+            $giftData->imagePath = $imagePath;
         }
 
         $newGiftRequest = $giftRequestService->createGiftRequest($giftData, $user);

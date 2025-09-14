@@ -11,5 +11,6 @@ class NewGiftRequestDTO
         public string $name,
         public string $description,
         public ?string $imagePath = null,
+        public ?string $imageBase64 = null,
     ) {}
 }

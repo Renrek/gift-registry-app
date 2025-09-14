@@ -48,6 +48,7 @@ class GiftRequestFormatter
             name: $payload->name ?? '',
             description: $payload->description ?? '',
             imagePath: $payload->imagePath ?? null,
+            imageBase64: $payload->imageBase64 ?? null,
         );
     }
 

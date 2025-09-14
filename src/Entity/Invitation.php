@@ -6,8 +6,13 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-class Invitation
+class Invitation implements EntityInterface
 {
+    public function getEntityType(): EntityType
+    {
+        return EntityType::INVITATION;
+    }
+    
     /**
      * @var int|null The identifier of an invitation, managed by the ORM
      */

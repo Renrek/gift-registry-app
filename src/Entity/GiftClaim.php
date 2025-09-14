@@ -7,8 +7,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
 
 #[ORM\Entity(repositoryClass: GiftClaimRepository::class)]
-class GiftClaim
+class GiftClaim implements EntityInterface
 {
+    public function getEntityType(): EntityType
+    {
+        return EntityType::GIFT_CLAIM;
+    }
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
