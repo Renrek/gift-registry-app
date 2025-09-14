@@ -7,12 +7,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\Connection;
 use App\Entity\User;
 use App\Repository\ConnectionRepository;
 use App\Repository\UserRepository;
 use App\Service\ConnectionService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
@@ -65,89 +63,56 @@ class ConnectionController extends AbstractController
 
     #[Route(path:'/add', methods: ['POST'], name: 'api_v1_add_connection')]
     public function add(
-        Request $request, 
-        EntityManagerInterface $entityManager,
-        #[CurrentUser] ?User $user
+        Request $request,
+        #[CurrentUser] ?User $user,
+        UserRepository $userRepository
     ): Response {
-        
         if (!$user) {
             throw new AccessDeniedException('You must be logged in to confirm a connection.');
         }
-
         $payload = json_decode($request->getContent(), false);
-        
-        $connectedUser = $entityManager->getRepository(User::class)->find($payload->id);
-
+        $connectedUser = $userRepository->find($payload->id ?? null);
         if (!$connectedUser) {
             return new Response('User not found', Response::HTTP_NOT_FOUND);
         }
-
         if ($this->connectionService->connectionExists($user, $connectedUser)) {
             return new Response('Connection already exists', Response::HTTP_CONFLICT);
         }
-        
-        $connection = new Connection();
-        $connection->setUser($user);
-        $connection->setConnectedUser($connectedUser);
-        $connection->setConfirmed(false);
-
-        $entityManager->persist($connection);
-        $entityManager->flush();
-
+        $this->connectionService->addConnection($user, $connectedUser);
         return new Response('Connection added successfully', Response::HTTP_CREATED);
     }
 
     #[Route(path:'/{connectionId}/confirm', methods: ['POST'], name: 'api_v1_confirm_connection')]
     public function confirm(
-        int $connectionId, 
-        #[CurrentUser] ?User $user,
-        EntityManagerInterface $entityManager,
+        int $connectionId,
+        #[CurrentUser] ?User $user
     ): Response {
-
         if (!$user) {
             throw new AccessDeniedException('You must be logged in to confirm a connection.');
         }
-
-        $connection = $entityManager->getRepository(Connection::class)->find($connectionId);
-
-        if (!$connection) {
+        try {
+            $this->connectionService->confirmConnection($connectionId, $user);
+        } catch (\Doctrine\ORM\EntityNotFoundException) {
             return new Response('Connection not found', Response::HTTP_NOT_FOUND);
-        }
-
-        // Ensure the user is the connected user in the connection and not the initiator
-        if ($connection->getConnectedUser()?->getId() !== $user->getId()) {
+        } catch (\Symfony\Component\Security\Core\Exception\AccessDeniedException) {
             return new Response('You are not authorized to confirm this connection', Response::HTTP_FORBIDDEN);
         }
-
-        $connection->setConfirmed(true);
-
-        $entityManager->flush();
-
         return new Response('Connection confirmed successfully', Response::HTTP_OK);
     }
 
     #[Route(path:'/{connectionId}/delete', methods: ['DELETE'], name: 'api_v1_delete_connection')]
     public function delete(
-        int $connectionId, 
-        EntityManagerInterface $entityManager,
-        Security $security
+        int $connectionId,
+        #[CurrentUser] ?User $user
     ): Response {
-
-        $user = $security->getUser();
-
         if (!$user) {
             throw new AccessDeniedException('You must be logged in to delete a connection.');
         }
-
-        $connection = $entityManager->getRepository(Connection::class)->find($connectionId);
-
-        if (!$connection) {
+        try {
+            $this->connectionService->deleteConnection($connectionId, $user);
+        } catch (\Doctrine\ORM\EntityNotFoundException) {
             return new Response('Connection not found', Response::HTTP_NOT_FOUND);
         }
-
-        $entityManager->remove($connection);
-        $entityManager->flush();
-
         return new Response('Connection deleted successfully', Response::HTTP_OK);
     }
 

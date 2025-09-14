@@ -4,10 +4,8 @@ namespace App\Controller\Rest\v1\GiftRequest;
 
 use App\Entity\User;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
-use App\Entity\GiftRequest;
 use App\Formatter\GiftRequest\GiftRequestFormatter;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityNotFoundException;
+use App\Service\GiftRequestService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,21 +19,11 @@ class GiftRequestController extends AbstractController
     public function handleAddGiftRequest(
         Request $request,
         #[CurrentUser] ?User $user,
-        EntityManagerInterface $entityManager,
         GiftRequestFormatter $giftFormatter,
+        GiftRequestService $giftRequestService,
     ): Response {
-        
-        $giftData = $giftFormatter->newGiftRequest(($request));
-
-        $newGiftRequest = new GiftRequest();
-        $newGiftRequest->setName((string) $giftData->name);
-        $newGiftRequest->setDescription((string) $giftData->description);
-        $newGiftRequest->setOwner($user);
-        $newGiftRequest->setFulfilled(false);
-
-        $entityManager->persist($newGiftRequest);
-        $entityManager->flush();
-
+        $giftData = $giftFormatter->newGiftRequest($request);
+        $newGiftRequest = $giftRequestService->createGiftRequest($giftData, $user);
         return $this->json($giftFormatter->fromEntity($newGiftRequest), Response::HTTP_CREATED);
     }
 
@@ -47,16 +35,13 @@ class GiftRequestController extends AbstractController
     public function handleEditGiftRequest(
         int $id,
         Request $request,
-        EntityManagerInterface $entityManager,
+        \App\Service\GiftRequestService $giftRequestService,
     ): Response {
-        
-        $giftRequest = $entityManager->getRepository(GiftRequest::class)->findOrFail($id);
-        
-        $giftRequest->setName((string) $request->request->get('name'));
-        $giftRequest->setDescription((string) $request->request->get('description'));
-
-        $entityManager->flush();
-
+        $data = [
+            'name' => $request->request->get('name'),
+            'description' => $request->request->get('description'),
+        ];
+        $giftRequestService->updateGiftRequest($id, $data);
         return $this->json([
             'success' => true,
             'message' => 'Gift Request Updated'
@@ -66,18 +51,9 @@ class GiftRequestController extends AbstractController
     #[Route(path: '/{id}/delete', methods: 'DELETE', name: 'api_v1_delete_gift_request')]
     public function handleDeleteGiftRequest(
         int $id,
-        EntityManagerInterface $entityManager
+        GiftRequestService $giftRequestService
     ): Response {
-        
-        $giftRequest = $entityManager->getRepository(GiftRequest::class)->find($id);
-
-        if (!$giftRequest) {
-            throw new EntityNotFoundException('Gift Request not found');
-        }
-
-        $entityManager->remove($giftRequest);
-        $entityManager->flush();
-
+        $giftRequestService->deleteGiftRequest($id);
         return $this->json(['message' => 'Gift Request Deleted'], Response::HTTP_OK);
     }
 }
