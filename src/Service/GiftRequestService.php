@@ -20,6 +20,9 @@ class GiftRequestService
         $giftRequest->setDescription((string) $giftData->description);
         $giftRequest->setOwner($user);
         $giftRequest->setFulfilled(false);
+        if (!empty($giftData->imagePath)) {
+            $giftRequest->setImagePath($giftData->imagePath);
+        }
         $this->entityManager->persist($giftRequest);
         $this->entityManager->flush();
         return $giftRequest;

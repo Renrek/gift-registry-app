@@ -47,6 +47,7 @@ class GiftRequestFormatter
         return new NewGiftRequestDTO(
             name: $payload->name ?? '',
             description: $payload->description ?? '',
+            imagePath: $payload->imagePath ?? null,
         );
     }
 

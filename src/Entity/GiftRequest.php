@@ -41,6 +41,9 @@ class GiftRequest
     #[ORM\Column(type: Types::INTEGER)]
     private int $quantity = 1;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $imagePath = null;
+
     /**
      * @var Collection<int, GiftClaim> A collection of GiftClaim entities
      */
@@ -152,6 +155,17 @@ class GiftRequest
         $this->quantity = $quantity;
 
         return $this;
+    }
+
+    public function getImagePath(): ?string 
+    { 
+        return $this->imagePath; 
+    }
+
+    public function setImagePath(?string $imagePath): self 
+    { 
+        $this->imagePath = $imagePath; 
+        return $this; 
     }
 
     /**

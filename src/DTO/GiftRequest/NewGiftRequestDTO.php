@@ -10,5 +10,6 @@ class NewGiftRequestDTO
     public function __construct(
         public string $name,
         public string $description,
+        public ?string $imagePath = null,
     ) {}
 }
