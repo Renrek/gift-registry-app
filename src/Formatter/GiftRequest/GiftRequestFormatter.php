@@ -3,6 +3,7 @@
 namespace App\Formatter\GiftRequest;
 
 use App\DTO\GiftRequest\GiftRequestDTO;
+use App\DTO\GiftRequest\GiftRequestEditDTO;
 use App\DTO\GiftRequest\NewGiftRequestDTO;
 use App\Entity\GiftRequest;
 use Symfony\Component\HttpFoundation\Request;
@@ -59,6 +60,16 @@ class GiftRequestFormatter
             description: $payload->description ?? '',
             editPath: $payload->editPath ?? '',
             deletePath: $payload->deletePath ?? '',
+        );
+    }
+
+    public function editDtoFromRequest(Request $request): GiftRequestEditDTO
+    {
+        $payload = json_decode($request->getContent(), false);
+
+        return new GiftRequestEditDTO(
+            name: $payload->name ?? '',
+            description: $payload->description ?? '',
         );
     }
 }

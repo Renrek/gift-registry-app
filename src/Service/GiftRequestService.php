@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use App\DTO\GiftRequest\GiftRequestEditDTO;
+use App\DTO\GiftRequest\NewGiftRequestDTO;
 use App\Entity\GiftRequest;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -11,7 +13,7 @@ class GiftRequestService
 {
     public function __construct(private EntityManagerInterface $entityManager) {}
 
-    public function createGiftRequest(object $giftData, User $user): GiftRequest
+    public function createGiftRequest(NewGiftRequestDTO $giftData, User $user): GiftRequest
     {
         $giftRequest = new GiftRequest();
         $giftRequest->setName((string) $giftData->name);
@@ -23,17 +25,17 @@ class GiftRequestService
         return $giftRequest;
     }
 
-    public function updateGiftRequest(int $id, array $data): GiftRequest
+    public function updateGiftRequest(int $id, GiftRequestEditDTO $data): GiftRequest
     {
         $giftRequest = $this->entityManager->getRepository(GiftRequest::class)->find($id);
         if (!$giftRequest) {
             throw new EntityNotFoundException('Gift Request not found');
         }
-        if (isset($data['name'])) {
-            $giftRequest->setName((string) $data['name']);
+        if ($data->name) {
+            $giftRequest->setName((string) $data->name);
         }
-        if (isset($data['description'])) {
-            $giftRequest->setDescription((string) $data['description']);
+        if ($data->description) {
+            $giftRequest->setDescription((string) $data->description);
         }
         $this->entityManager->flush();
         return $giftRequest;

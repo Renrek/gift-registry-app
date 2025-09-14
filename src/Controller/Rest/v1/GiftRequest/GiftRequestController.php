@@ -22,6 +22,9 @@ class GiftRequestController extends AbstractController
         GiftRequestFormatter $giftFormatter,
         GiftRequestService $giftRequestService,
     ): Response {
+        if (!$user) {
+            throw $this->createAccessDeniedException('User must be logged in to create a gift request.');
+        }
         $giftData = $giftFormatter->newGiftRequest($request);
         $newGiftRequest = $giftRequestService->createGiftRequest($giftData, $user);
         return $this->json($giftFormatter->fromEntity($newGiftRequest), Response::HTTP_CREATED);
@@ -35,12 +38,10 @@ class GiftRequestController extends AbstractController
     public function handleEditGiftRequest(
         int $id,
         Request $request,
-        \App\Service\GiftRequestService $giftRequestService,
+        GiftRequestService $giftRequestService,
+        GiftRequestFormatter $giftFormatter,
     ): Response {
-        $data = [
-            'name' => $request->request->get('name'),
-            'description' => $request->request->get('description'),
-        ];
+        $data = $giftFormatter->editDtoFromRequest($request);
         $giftRequestService->updateGiftRequest($id, $data);
         return $this->json([
             'success' => true,
