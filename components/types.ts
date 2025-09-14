@@ -16,6 +16,11 @@ export interface NewGiftRequestDTO {
     description: string;
 }
 
+export interface GiftRequestEditDTO {
+    name: string;
+    description: string;
+}
+
 export interface UserDTO {
     id: number;
     email: string;
