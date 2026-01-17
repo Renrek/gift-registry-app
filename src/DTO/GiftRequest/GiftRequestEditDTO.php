@@ -10,5 +10,8 @@ class GiftRequestEditDTO
     public function __construct(
         public string $name,
         public string $description,
+        public ?string $imageBase64 = null,
+        public bool $removeImage = false,
+        public ?string $imagePath = null,
     ) {}
 }

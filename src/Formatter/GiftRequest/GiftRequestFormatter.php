@@ -24,7 +24,8 @@ class GiftRequestFormatter
             id: $giftRequest->getId() ?? 0,
             name: $giftRequest->getName() ?? '',
             description: $giftRequest->getDescription() ?? '',
-            editPath: $this->urlGenerator->generate('edit_gift_request', ['id' => $giftRequest->getId()]),
+            imagePath: $giftRequest->getImagePath() ?? '',
+            editPath: $this->urlGenerator->generate('api_v1_update_gift_request', ['id' => $giftRequest->getId()]),
             deletePath: $this->urlGenerator->generate('api_v1_delete_gift_request', ['id' => $giftRequest->getId()]),
         );
     }
@@ -60,6 +61,7 @@ class GiftRequestFormatter
             id: $payload->id ?? 0,
             name: $payload->name ?? '',
             description: $payload->description ?? '',
+            imagePath: $payload->imagePath ?? '',
             editPath: $payload->editPath ?? '',
             deletePath: $payload->deletePath ?? '',
         );
@@ -72,6 +74,9 @@ class GiftRequestFormatter
         return new GiftRequestEditDTO(
             name: $payload->name ?? '',
             description: $payload->description ?? '',
+            imageBase64: $payload->imageBase64 ?? null,
+            removeImage: $payload->removeImage ?? false,
+            imagePath: $payload->imagePath ?? null,
         );
     }
 }

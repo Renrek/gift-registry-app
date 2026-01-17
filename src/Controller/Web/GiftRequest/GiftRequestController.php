@@ -34,26 +34,4 @@ class GiftRequestController extends AbstractController
         ]);
     }
 
-    #[Route(
-        path: '/{id}/edit', 
-        methods: ['GET'], 
-        name: 'edit_gift_request')
-    ]
-    public function editGiftRequest(
-        int $id,
-        EntityManagerInterface $entityManager,
-        GiftRequestFormatter $giftFormatter
-    ): Response {
-        
-        $giftRequest = $entityManager->getRepository(GiftRequest::class)->find($id);
-
-        if(!$giftRequest) {
-            throw new EntityNotFoundException('Gift Request not found');
-        }
-
-        return $this->render('gift-request/edit/edit.html.twig', [
-            'updateURL' => $this->generateUrl('api_v1_update_gift_request', ['id' => $giftRequest->getId()]),
-            'giftRequest' => $giftFormatter->fromEntity($giftRequest),
-        ]);
-    }
 }

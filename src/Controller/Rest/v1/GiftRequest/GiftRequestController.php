@@ -2,13 +2,11 @@
 
 namespace App\Controller\Rest\v1\GiftRequest;
 
-use App\DTO\GiftRequest\NewGiftRequestDTO;
 use App\Entity\User;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use App\Formatter\GiftRequest\GiftRequestFormatter;
 use App\Service\GiftRequestService;
 use App\Service\FileUploadService;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,7 +16,11 @@ use Symfony\Component\Routing\Attribute\Route;
 class GiftRequestController extends AbstractController
 {
 
-    #[Route(path: '/add', methods: ['POST'], name: 'api_v1_add_gift_request')]
+    #[Route(
+        path: '/add', 
+        methods: ['POST'], 
+        name: 'api_v1_add_gift_request'
+    )]
     public function handleAddGiftRequest(
         Request $request,
         #[CurrentUser] ?User $user,
@@ -50,18 +52,36 @@ class GiftRequestController extends AbstractController
     public function handleEditGiftRequest(
         int $id,
         Request $request,
+        #[CurrentUser] ?User $user,
         GiftRequestService $giftRequestService,
         GiftRequestFormatter $giftFormatter,
+        FileUploadService $fileUploadService,
     ): Response {
+        if (!$user) {
+            throw $this->createAccessDeniedException('User must be logged in to edit a gift request.');
+        }
+
+        $giftRequest = $giftRequestService->getGiftRequestById($id);
+        
+        // Verify the user owns this gift request
+        if ($giftRequest->getOwner()->getId() !== $user->getId()) {
+            throw $this->createAccessDeniedException('You do not have permission to edit this gift request.');
+        }
+
         $data = $giftFormatter->editDtoFromRequest($request);
-        $giftRequestService->updateGiftRequest($id, $data);
-        return $this->json([
-            'success' => true,
-            'message' => 'Gift Request Updated'
-        ], Response::HTTP_OK);
+        if (!empty($data->imageBase64)) {
+            $imagePath = $fileUploadService->saveBase64Image($data->imageBase64, 'gift-images');
+            $data->imagePath = $imagePath;
+        }
+        $updatedGiftRequest = $giftRequestService->updateGiftRequest($id, $data);
+        return $this->json($giftFormatter->fromEntity($updatedGiftRequest), Response::HTTP_OK);
     }
 
-    #[Route(path: '/{id}/delete', methods: 'DELETE', name: 'api_v1_delete_gift_request')]
+    #[Route(
+        path: '/{id}/delete', 
+        methods: 'DELETE', 
+        name: 'api_v1_delete_gift_request'
+    )]
     public function handleDeleteGiftRequest(
         int $id,
         GiftRequestService $giftRequestService

@@ -7,6 +7,7 @@ export interface GiftRequestDTO {
     id: number;
     name: string;
     description: string;
+    imagePath: string;
     editPath: string;
     deletePath: string;
 }
@@ -14,11 +15,16 @@ export interface GiftRequestDTO {
 export interface NewGiftRequestDTO {
     name: string;
     description: string;
+    imagePath: string;
+    imageBase64: string;
 }
 
 export interface GiftRequestEditDTO {
     name: string;
     description: string;
+    imageBase64: string;
+    removeImage: boolean;
+    imagePath: string;
 }
 
 export interface UserDTO {
