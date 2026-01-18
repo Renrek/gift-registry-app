@@ -89,6 +89,15 @@ class GiftRequestService
         if (!$giftRequest) {
             throw new EntityNotFoundException('Gift Request not found');
         }
+
+        // Delete associated image file if it exists
+        if ($giftRequest->getImagePath()) {
+            $fullPath = $this->fileUploadService->getTargetDirectory() . DIRECTORY_SEPARATOR . $giftRequest->getImagePath();
+            if (file_exists($fullPath)) {
+                @unlink($fullPath);
+            }
+        }
+
         $this->entityManager->remove($giftRequest);
         $this->entityManager->flush();
     }

@@ -3,7 +3,7 @@ import * as ReactDOMClient from 'react-dom/client';
 import { registerComponent } from "../../component.loader";
 import { observer } from "mobx-react";
 import { action, makeObservable, observable } from "mobx";
-import { Box } from "@mui/material";
+import { Box, Tooltip } from "@mui/material";
 import { DataGrid, GridColDef, GridToolbar } from '@mui/x-data-grid';
 import { GiftRequestFormDialogController, GiftRequestFormDialog } from "../FormDialog/GiftRequestFormDialog";
 import { GiftRequestDTO } from "../../types";
@@ -95,6 +95,33 @@ const GiftRequestList : React.FC<{
     const columns: GridColDef[] = [
         { field: 'name', headerName: 'Name', flex: 1, width: 150 },
         { field: 'description', headerName: 'Description', flex: 3, width: 150 },
+        {
+            field: 'image',
+            headerName: 'Image',
+            flex: 1,
+            renderCell: (params) => (
+                params.row.imagePath ? (
+                    <Tooltip
+                        title={
+                            <img
+                                src={`/uploads/${params.row.imagePath}`}
+                                alt="Gift"
+                                style={{ maxWidth: 300, maxHeight: 300, borderRadius: 4 }}
+                            />
+                        }
+                        arrow
+                    >
+                        <img
+                            src={`/uploads/${params.row.imagePath}`}
+                            alt="Gift"
+                            style={{ maxWidth: 60, maxHeight: 60, borderRadius: 4, cursor: 'pointer' }}
+                        />
+                    </Tooltip>
+                ) : (
+                    <span style={{ color: '#999' }}>No image</span>
+                )
+            ),
+        },
         {
             field: 'edit',
             headerName: 'Edit',

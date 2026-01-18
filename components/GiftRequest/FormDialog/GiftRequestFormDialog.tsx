@@ -116,6 +116,8 @@ export class GiftRequestFormDialogController {
             // Reset the dialog state after successful submission
             this.imageFile = null;
             this.removeImage = false;
+            // Update imagePath with the response from server
+            this.imagePath = result.data.imagePath || null;
             this.onUpdate(result.data);
         });
         this.toggleDialog();
@@ -164,6 +166,7 @@ export const GiftRequestFormDialog: React.FC<{
             <Dialog
                 open={controller.isOpen}
                 onClose={controller.toggleDialog}
+                disableEnforceFocus
                 PaperProps={{ component: 'div' }}
             >
                 <DialogTitle>{title}</DialogTitle>
