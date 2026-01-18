@@ -14,51 +14,72 @@ registerComponent('gift-request-list', (element, parameters) => {
     ReactDOMClient.createRoot(element).render(<GiftRequestList controller={controller}/>);
 });
 
+type GiftRequestLineItem = {
+    giftRequest: GiftRequestDTO;
+    controller: GiftRequestFormDialogController;
+}
+
 class GiftRequestListController {
 
     @observable
-    public giftRequests: Array<GiftRequestDTO> = [];
+    public lineItems: Array<GiftRequestLineItem> = [];
 
     public addGiftRequestURL: string;
     constructor(giftRequests: Array<GiftRequestDTO>, addGiftRequestURL: string)
     {
         makeObservable(this);
-        this.giftRequests = giftRequests;
+        this.lineItems = giftRequests.map(gr => this.createLineItem(gr));
         this.addGiftRequestURL = addGiftRequestURL;
+    }
+
+    private createLineItem(giftRequest: GiftRequestDTO): GiftRequestLineItem {
+        const controller = new GiftRequestFormDialogController(
+            (result) => this.updateGiftRequest(result),
+            (deletedGift) => this.deleteGiftRequestFromDialog(deletedGift),
+            giftRequest.editPath,
+            giftRequest
+        );
+        return { giftRequest, controller };
     }
 
     @action
     addGiftRequest(giftRequest: GiftRequestDTO): void
     {
-        this.giftRequests = [...this.giftRequests, giftRequest];
+        this.lineItems = [...this.lineItems, this.createLineItem(giftRequest)];
     }
 
     @action
     updateGiftRequest(updatedGiftRequest: GiftRequestDTO): void
     {
-        const index = this.giftRequests.findIndex(gr => gr.id === updatedGiftRequest.id);
+        const index = this.lineItems.findIndex(li => li.giftRequest.id === updatedGiftRequest.id);
         if (index !== -1) {
-            this.giftRequests[index] = updatedGiftRequest;
+            this.lineItems[index] = {
+                ...this.lineItems[index],
+                giftRequest: updatedGiftRequest,
+            };
         }
     }
 
     @action
     deleteGiftRequestFromDialog(giftRequest: GiftRequestDTO): void
     {
-        this.giftRequests = this.giftRequests.filter(gr => gr.id !== giftRequest.id);
+        this.lineItems = this.lineItems.filter(li => li.giftRequest.id !== giftRequest.id);
+    }
+
+    public getEditController(giftRequest: GiftRequestDTO): GiftRequestFormDialogController {
+        const item = this.lineItems.find(li => li.giftRequest.id === giftRequest.id);
+        if (!item) {
+            const newItem = this.createLineItem(giftRequest);
+            this.lineItems = [...this.lineItems, newItem];
+            return newItem.controller;
+        }
+        return item.controller;
     }
 
 }
 
 const GiftRequestEditCell: React.FC<{ listController: GiftRequestListController; giftRequest: GiftRequestDTO }> = ({ listController, giftRequest }) => {
-    const editDialogController = React.useMemo(() => new GiftRequestFormDialogController(
-        (result) => listController.updateGiftRequest(result),
-        (deletedGift) => listController.deleteGiftRequestFromDialog(deletedGift),
-        giftRequest.editPath,
-        giftRequest
-    ), [giftRequest, listController]);
-
-    return <GiftRequestFormDialog controller={editDialogController} />;
+    return <GiftRequestFormDialog controller={listController.getEditController(giftRequest)} />;
 };
 
 const GiftRequestList : React.FC<{
@@ -96,7 +117,7 @@ const GiftRequestList : React.FC<{
     >
         <GiftRequestFormDialog controller={giftRequestCreateDialogController} />
         <DataGrid
-            rows={controller.giftRequests}
+            rows={controller.lineItems.map(li => li.giftRequest)}
             columns={columns}
             getRowId={(row) =>  row.id}
             slots={{ toolbar: GridToolbar }}
