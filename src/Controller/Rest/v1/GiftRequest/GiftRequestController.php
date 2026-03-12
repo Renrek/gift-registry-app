@@ -64,7 +64,8 @@ class GiftRequestController extends AbstractController
         $giftRequest = $giftRequestService->getGiftRequestById($id);
         
         // Verify the user owns this gift request
-        if ($giftRequest->getOwner()->getId() !== $user->getId()) {
+        $owner = $giftRequest->getOwner();
+        if ($owner === null || $owner->getId() !== $user->getId()) {
             throw $this->createAccessDeniedException('You do not have permission to edit this gift request.');
         }
 

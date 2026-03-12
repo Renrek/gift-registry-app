@@ -12,5 +12,6 @@ class GiftSelectionPanelItemDTO
         public string $name,
         public string $description,
         public string $claimUrl,
+        public ?string $imagePath = null,
     ) {}
 }

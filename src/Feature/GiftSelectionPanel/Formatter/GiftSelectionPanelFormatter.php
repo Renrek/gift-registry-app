@@ -32,6 +32,7 @@ class GiftSelectionPanelFormatter
             name: $gift->getName() ?? '',
             description: $gift->getDescription() ?? '',
             claimUrl: '',
+            imagePath: $gift->getImagePath(),
         );
     }
 }

@@ -48,6 +48,7 @@ export interface GiftSelectionPanelItemDTO {
     name: string;
     description: string;
     claimUrl: string;
+    imagePath: string;
 }
 
 export interface InvitationPanelConfig {
