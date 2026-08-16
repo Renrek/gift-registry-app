@@ -90,13 +90,7 @@ class ConnectionController extends AbstractController
         if (!$user) {
             throw new AccessDeniedException('You must be logged in to confirm a connection.');
         }
-        try {
-            $this->connectionService->confirmConnection($connectionId, $user);
-        } catch (\Doctrine\ORM\EntityNotFoundException) {
-            return new Response('Connection not found', Response::HTTP_NOT_FOUND);
-        } catch (\Symfony\Component\Security\Core\Exception\AccessDeniedException) {
-            return new Response('You are not authorized to confirm this connection', Response::HTTP_FORBIDDEN);
-        }
+        $this->connectionService->confirmConnection($connectionId, $user);
         return new Response('Connection confirmed successfully', Response::HTTP_OK);
     }
 
@@ -108,11 +102,7 @@ class ConnectionController extends AbstractController
         if (!$user) {
             throw new AccessDeniedException('You must be logged in to delete a connection.');
         }
-        try {
-            $this->connectionService->deleteConnection($connectionId, $user);
-        } catch (\Doctrine\ORM\EntityNotFoundException) {
-            return new Response('Connection not found', Response::HTTP_NOT_FOUND);
-        }
+        $this->connectionService->deleteConnection($connectionId, $user);
         return new Response('Connection deleted successfully', Response::HTTP_OK);
     }
 

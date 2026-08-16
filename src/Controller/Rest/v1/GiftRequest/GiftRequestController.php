@@ -62,7 +62,7 @@ class GiftRequestController extends AbstractController
         }
 
         $giftRequest = $giftRequestService->getGiftRequestById($id);
-        
+
         // Verify the user owns this gift request
         $owner = $giftRequest->getOwner();
         if ($owner === null || $owner->getId() !== $user->getId()) {
@@ -74,7 +74,9 @@ class GiftRequestController extends AbstractController
             $imagePath = $fileUploadService->saveBase64Image($data->imageBase64, 'gift-images');
             $data->imagePath = $imagePath;
         }
+
         $updatedGiftRequest = $giftRequestService->updateGiftRequest($id, $data);
+
         return $this->json($giftFormatter->fromEntity($updatedGiftRequest), Response::HTTP_OK);
     }
 

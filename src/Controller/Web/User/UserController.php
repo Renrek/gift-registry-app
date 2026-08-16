@@ -22,13 +22,13 @@ class UserController extends AbstractController
         UserFormatter $userFormatter,
     ): Response {
         if (!$this->getUser() instanceof User) {
-            return new Response('User not authenticated', Response::HTTP_UNAUTHORIZED);
+            throw $this->createAccessDeniedException('You must be logged in to view a user.');
         }
 
         $user = $entityManager->getRepository(User::class)->find($id);
 
         if ($user === null) {
-            throw new \LogicException('User must not be null.');
+            throw $this->createNotFoundException('User not found.');
         }
         
         $giftRequests = $user->getGiftRequests()->toArray(); 
