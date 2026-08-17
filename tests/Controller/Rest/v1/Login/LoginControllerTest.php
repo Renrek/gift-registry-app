@@ -36,6 +36,10 @@ class LoginControllerTest extends TestCase
     private function createController(): LoginController
     {
         return new class extends LoginController {
+            /**
+             * @param array<string, mixed> $headers
+             * @param array<string, mixed> $context
+             */
             public function json(mixed $data, int $status = 200, array $headers = [], array $context = []): JsonResponse
             {
                 return new JsonResponse($data, $status, $headers);

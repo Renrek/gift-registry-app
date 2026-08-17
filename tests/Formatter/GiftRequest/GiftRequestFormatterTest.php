@@ -61,7 +61,7 @@ class GiftRequestFormatterTest extends TestCase
             'description' => '2-slice toaster',
             'imagePath' => 'gift-images/toaster.jpg',
             'imageBase64' => 'base64-data',
-        ]));
+        ], JSON_THROW_ON_ERROR));
 
         $fullDto = $formatter->newGiftRequest($fullPayloadRequest);
         $this->assertSame('Toaster', $fullDto->name);
@@ -88,7 +88,7 @@ class GiftRequestFormatterTest extends TestCase
             'imageBase64' => 'new-image-data',
             'removeImage' => true,
             'imagePath' => 'gift-images/mixer.jpg',
-        ]));
+        ], JSON_THROW_ON_ERROR));
 
         $fullDto = $formatter->editDtoFromRequest($fullPayloadRequest);
         $this->assertSame('Mixer', $fullDto->name);

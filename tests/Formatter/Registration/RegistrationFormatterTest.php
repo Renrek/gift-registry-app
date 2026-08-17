@@ -25,7 +25,7 @@ class RegistrationFormatterTest extends TestCase
         $request = new Request(content: json_encode([
             'email' => 'user@example.com',
             'password' => 'secret',
-        ]));
+        ], JSON_THROW_ON_ERROR));
 
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Missing required fields in payload');
@@ -40,7 +40,7 @@ class RegistrationFormatterTest extends TestCase
             'email' => 'user@example.com',
             'password' => 'secret',
             'invitationCode' => 'inv-123',
-        ]));
+        ], JSON_THROW_ON_ERROR));
 
         $dto = $formatter->fromRequest($request);
 

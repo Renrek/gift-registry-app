@@ -114,7 +114,7 @@ class ConnectionControllerTest extends TestCase
         $service = $this->createMock(ConnectionService::class);
         $controller = $this->createController($service);
 
-        $request = new Request(content: json_encode(['id' => 99]));
+        $request = new Request(content: json_encode(['id' => 99], JSON_THROW_ON_ERROR));
         $currentUser = $this->createMock(User::class);
 
         $userRepository = $this->createMock(UserRepository::class);
@@ -131,7 +131,7 @@ class ConnectionControllerTest extends TestCase
         $service = $this->createMock(ConnectionService::class);
         $controller = $this->createController($service);
 
-        $request = new Request(content: json_encode(['id' => 2]));
+        $request = new Request(content: json_encode(['id' => 2], JSON_THROW_ON_ERROR));
         $currentUser = $this->createMock(User::class);
         $targetUser = $this->createMock(User::class);
 
@@ -151,7 +151,7 @@ class ConnectionControllerTest extends TestCase
         $service = $this->createMock(ConnectionService::class);
         $controller = $this->createController($service);
 
-        $request = new Request(content: json_encode(['id' => 2]));
+        $request = new Request(content: json_encode(['id' => 2], JSON_THROW_ON_ERROR));
         $currentUser = $this->createMock(User::class);
         $targetUser = $this->createMock(User::class);
 
@@ -167,48 +167,52 @@ class ConnectionControllerTest extends TestCase
         $this->assertSame('Connection added successfully', $response->getContent());
     }
 
-    public function testConfirmMapsNotFoundExceptionTo404(): void
+    public function testConfirmPropagatesNotFoundException(): void
     {
         $service = $this->createMock(ConnectionService::class);
         $service->method('confirmConnection')->willThrowException(new EntityNotFoundException('Connection not found'));
 
         $controller = $this->createController($service);
 
-        $response = $controller->confirm(123, $this->createMock(User::class));
+        $this->expectException(EntityNotFoundException::class);
+        $this->expectExceptionMessage('Connection not found');
 
-        $this->assertSame(Response::HTTP_NOT_FOUND, $response->getStatusCode());
-        $this->assertSame('Connection not found', $response->getContent());
+        $controller->confirm(123, $this->createMock(User::class));
     }
 
-    public function testConfirmMapsAccessDeniedExceptionTo403(): void
+    public function testConfirmPropagatesAccessDeniedException(): void
     {
         $service = $this->createMock(ConnectionService::class);
         $service->method('confirmConnection')->willThrowException(new AccessDeniedException('Denied'));
 
         $controller = $this->createController($service);
 
-        $response = $controller->confirm(124, $this->createMock(User::class));
+        $this->expectException(AccessDeniedException::class);
+        $this->expectExceptionMessage('Denied');
 
-        $this->assertSame(Response::HTTP_FORBIDDEN, $response->getStatusCode());
-        $this->assertSame('You are not authorized to confirm this connection', $response->getContent());
+        $controller->confirm(124, $this->createMock(User::class));
     }
 
-    public function testDeleteMapsNotFoundExceptionTo404(): void
+    public function testDeletePropagatesNotFoundException(): void
     {
         $service = $this->createMock(ConnectionService::class);
         $service->method('deleteConnection')->willThrowException(new EntityNotFoundException('Connection not found'));
 
         $controller = $this->createController($service);
 
-        $response = $controller->delete(125, $this->createMock(User::class));
+        $this->expectException(EntityNotFoundException::class);
+        $this->expectExceptionMessage('Connection not found');
 
-        $this->assertSame(Response::HTTP_NOT_FOUND, $response->getStatusCode());
-        $this->assertSame('Connection not found', $response->getContent());
+        $controller->delete(125, $this->createMock(User::class));
     }
 
     private function createController(ConnectionService $service): ConnectionController
     {
         return new class($service) extends ConnectionController {
+            /**
+             * @param array<string, mixed> $headers
+             * @param array<string, mixed> $context
+             */
             public function json(mixed $data, int $status = 200, array $headers = [], array $context = []): JsonResponse
             {
                 return new JsonResponse($data, $status, $headers);

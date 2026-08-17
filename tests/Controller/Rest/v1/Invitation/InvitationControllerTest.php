@@ -14,7 +14,7 @@ class InvitationControllerTest extends TestCase
     public function testCreateReturnsUnauthorizedWhenUserIsMissing(): void
     {
         $controller = $this->createController(null);
-        $request = new Request(content: json_encode(['email' => 'invitee@example.com']));
+        $request = new Request(content: json_encode(['email' => 'invitee@example.com'], JSON_THROW_ON_ERROR));
 
         $service = $this->createMock(InvitationService::class);
 
@@ -28,7 +28,7 @@ class InvitationControllerTest extends TestCase
     {
         $user = $this->createMock(User::class);
         $controller = $this->createController($user);
-        $request = new Request(content: json_encode(['email' => '']));
+        $request = new Request(content: json_encode(['email' => ''], JSON_THROW_ON_ERROR));
 
         $service = $this->createMock(InvitationService::class);
 
@@ -42,7 +42,7 @@ class InvitationControllerTest extends TestCase
     {
         $user = $this->createMock(User::class);
         $controller = $this->createController($user);
-        $request = new Request(content: json_encode(['email' => 'invitee@example.com']));
+        $request = new Request(content: json_encode(['email' => 'invitee@example.com'], JSON_THROW_ON_ERROR));
 
         $service = $this->createMock(InvitationService::class);
         $service->expects($this->once())

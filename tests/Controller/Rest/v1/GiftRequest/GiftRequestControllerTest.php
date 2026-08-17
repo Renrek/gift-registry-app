@@ -189,6 +189,10 @@ class GiftRequestControllerTest extends TestCase
     private function createController(): GiftRequestController
     {
         return new class extends GiftRequestController {
+            /**
+             * @param array<string, mixed> $headers
+             * @param array<string, mixed> $context
+             */
             public function json(mixed $data, int $status = 200, array $headers = [], array $context = []): JsonResponse
             {
                 return new JsonResponse($data, $status, $headers);
