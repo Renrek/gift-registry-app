@@ -27,19 +27,22 @@ security:
                 check_path: app_login
             json_login:
                 check_path: api_v1_login
+            login_throttling:
+                max_attempts: 5
+                interval: '15 minutes'
             logout:
                 path: /logout
-                
+
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
         # Allow access to the registration route and all its subroutes for everyone
-        - { path: ^/registration(/.*)?$, roles: PUBLIC_ACCESS }
+        - { path: '^/registration(/.*)?$', roles: PUBLIC_ACCESS }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
-        - { path: ^/api/v1/login, roles: PUBLIC_ACCESS }
-        - { path: ^/$, roles: PUBLIC_ACCESS }
-        - { path: ^/*, roles: IS_AUTHENTICATED_FULLY }
+        - { path: '^/api/v1/login', roles: PUBLIC_ACCESS }
+        - { path: '^/$', roles: PUBLIC_ACCESS }
+        - { path: '^/*', roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:

@@ -26,11 +26,7 @@ class AuthLoginFormController {
     @observable public isLoggedin: boolean = false;
 
     constructor(isLoggedin: boolean) {
-        console.log('in constructor',window.localStorage.getItem('XSRF-TOKEN'));
-        
         this.isLoggedin = isLoggedin;
-        console.log(this.isLoggedin);
-        
         makeObservable(this);
     }
 
