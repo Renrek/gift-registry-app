@@ -70,6 +70,11 @@ class AuthRegistrationFormController {
         this.showConfirmPassword = state;
     }
 
+    @action
+    public setMessage = (message: string): void => {
+        this.message = message;
+    }
+
     public submitNewUser = () => {
         axios.post('/api/v1/registration/create', {
             email: this.email,
@@ -77,6 +82,8 @@ class AuthRegistrationFormController {
             invitationCode: this.inviteCode
         }).then((res) => {
             window.open("/", "_self");
+        }).catch((error) => {
+            this.setMessage(error.response?.data ?? 'Registration failed. Please try again.');
         });
     }
     
