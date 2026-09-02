@@ -22,7 +22,7 @@ class Invitation implements EntityInterface
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?User $inviter = null;
 
     #[ORM\Column(type: Types::STRING, length: 255)]

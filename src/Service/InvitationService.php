@@ -38,4 +38,19 @@ class InvitationService
 
         return $invitation;
     }
+
+    /**
+     * Creates an invitation with no inviter, used to onboard a user without an automatic friend connection.
+     */
+    public function createSystemInvitation(string $email): Invitation
+    {
+        $invitation = new Invitation();
+        $invitation->setEmail($email);
+        $invitation->setInvitationCode($this->uuidService->generateV1UUID());
+
+        $this->entityManager->persist($invitation);
+        $this->entityManager->flush();
+
+        return $invitation;
+    }
 }

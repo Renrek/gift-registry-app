@@ -55,13 +55,16 @@ class RegistrationController extends AbstractController
 
         $entityManager->flush();
 
-        $connection = new Connection();
-        $connection->setUser($invitation->getInviter());
-        $connection->setConnectedUser($user);
-        $connection->setConfirmed(true);
+        // System invitations have no inviter, so no automatic friend connection is created
+        if ($invitation->getInviter() !== null) {
+            $connection = new Connection();
+            $connection->setUser($invitation->getInviter());
+            $connection->setConnectedUser($user);
+            $connection->setConfirmed(true);
 
-        $entityManager->persist($connection);
-        $entityManager->flush();
+            $entityManager->persist($connection);
+            $entityManager->flush();
+        }
 
         return new Response('User registered successfully', Response::HTTP_CREATED);
     }

@@ -115,4 +115,52 @@ class RegistrationControllerTest extends TestCase
         $this->assertSame('hashed-password', $persisted[0]->getPassword());
         $this->assertInstanceOf(\App\Entity\Connection::class, $persisted[2]);
     }
+
+    public function testHandleRegistrationCreatesUserWithoutConnectionForSystemInvitation(): void
+    {
+        $request = new Request();
+        $controller = new RegistrationController();
+
+        $registrationFormatter = $this->createMock(RegistrationFormatter::class);
+        $registrationFormatter->method('fromRequest')->with($request)->willReturn(
+            new RegistrationRequestDTO('user@example.com', 'password', 'system-code')
+        );
+
+        $invitation = new Invitation();
+        $invitation->setEmail('user@example.com');
+        $invitation->setInvitationCode('system-code');
+        $invitation->setUsed(false);
+
+        $invitationRepository = $this->createMock(EntityRepository::class);
+        $invitationRepository->method('findOneBy')->with([
+            'invitationCode' => 'system-code',
+            'used' => false,
+        ])->willReturn($invitation);
+
+        $persisted = [];
+
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->method('getRepository')->with(Invitation::class)->willReturn($invitationRepository);
+        $entityManager->expects($this->exactly(2))
+            ->method('persist')
+            ->with($this->callback(function (object $entity) use (&$persisted): bool {
+                $persisted[] = $entity;
+                return true;
+            }));
+        $entityManager->expects($this->exactly(2))->method('flush');
+
+        $passwordHasher = $this->createMock(UserPasswordHasherInterface::class);
+        $passwordHasher->expects($this->once())
+            ->method('hashPassword')
+            ->with($this->isInstanceOf(User::class), 'password')
+            ->willReturn('hashed-password');
+
+        $response = $controller->handleRegistration($request, $passwordHasher, $entityManager, $registrationFormatter);
+
+        $this->assertSame(201, $response->getStatusCode());
+        $this->assertCount(2, $persisted);
+        $this->assertInstanceOf(User::class, $persisted[0]);
+        $this->assertInstanceOf(Invitation::class, $persisted[1]);
+        $this->assertNull($persisted[0]->getInvitedBy());
+    }
 }
