@@ -1,4 +1,9 @@
 
+import * as React from 'react';
+import * as ReactDOMClient from 'react-dom/client';
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import { theme } from './theme';
+
 interface ComponentCallback {
     (element: HTMLElement, parameters: any) : void;
 }
@@ -9,6 +14,16 @@ const componentMap = new Map<string, ComponentCallback>();
 // Add React component to Map
 export const registerComponent = (id: string, callback: ComponentCallback) => {
     componentMap.set(id, callback);
+}
+
+// Mounts a component's root node wrapped in the shared MUI theme.
+export const renderWithTheme = (element: HTMLElement, node: React.ReactNode) => {
+    ReactDOMClient.createRoot(element).render(
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            {node}
+        </ThemeProvider>
+    );
 }
 
 // Watches dom for elements that call for react component.

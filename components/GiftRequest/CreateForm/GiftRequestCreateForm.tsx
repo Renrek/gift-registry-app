@@ -1,6 +1,5 @@
 import * as React from 'react';
-import * as ReactDOMClient from 'react-dom/client';
-import { registerComponent } from '../../component.loader';
+import { registerComponent, renderWithTheme } from '../../component.loader';
 import { observer } from 'mobx-react';
 import { Box, Button, FormControl, Input, InputLabel } from '@mui/material';
 import { action, observable } from 'mobx';
@@ -9,9 +8,7 @@ import axios from 'axios';
 
 registerComponent('gift-request-form', (element, parameters) => {
     const controller = new GiftRegistrationController();
-    ReactDOMClient.createRoot(element).render(
-        <GiftRegistrationForm controller={controller} />
-    );  
+    renderWithTheme(element, <GiftRegistrationForm controller={controller} />);
 });
 
 class GiftRegistrationController {

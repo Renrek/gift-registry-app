@@ -1,6 +1,5 @@
 import * as React from 'react';
-import * as ReactDOMClient from 'react-dom/client';
-import { registerComponent } from "../../../component.loader";
+import { registerComponent, renderWithTheme } from "../../../component.loader";
 import { observer } from 'mobx-react';
 import { Box, Button, FormControl, FormHelperText, IconButton, Input, InputAdornment, InputLabel } from '@mui/material';
 import { action, makeObservable, observable } from 'mobx';
@@ -10,7 +9,7 @@ import axios from 'axios';
 
 registerComponent('registration-form', (element, parameters) => {
     const controller = new AuthRegistrationFormController();
-    ReactDOMClient.createRoot(element).render(<AuthRegistrationForm controller={controller} />)
+    renderWithTheme(element, <AuthRegistrationForm controller={controller} />)
 });
 
 class AuthRegistrationFormController {
