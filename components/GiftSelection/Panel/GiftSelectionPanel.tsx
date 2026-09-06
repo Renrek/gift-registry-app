@@ -1,6 +1,5 @@
 import React from 'react';
-import * as ReactDOMClient from 'react-dom/client';
-import { registerComponent } from '../../component.loader';
+import { registerComponent, renderWithTheme } from '../../component.loader';
 import { observer } from 'mobx-react';
 import { action, makeObservable, observable } from 'mobx';
 import { GiftSelectionPanelConfig, GiftSelectionPanelItemDTO } from '../../types';
@@ -10,9 +9,7 @@ import { GiftDetailDialogController, GiftDetailDialog } from '../DetailDialog/Gi
 registerComponent('gift-selection-panel', (element, parameters) => {
     const [ config ] = parameters;
     const controller = new GiftSelectionPanelController(config);
-    ReactDOMClient.createRoot(element).render(
-        <GiftSelectionPanel controller={controller}/>
-    );  
+    renderWithTheme(element, <GiftSelectionPanel controller={controller}/>);
 });
 
 class GiftSelectionPanelController {

@@ -1,17 +1,17 @@
 import React from "react";
-import * as ReactDOMClient from 'react-dom/client';
-import { registerComponent } from "../../component.loader";
+import { registerComponent, renderWithTheme } from "../../component.loader";
 import { observer } from "mobx-react";
 import { action, makeObservable, observable } from "mobx";
-import { Box, Tooltip } from "@mui/material";
+import { Box, Card, CardContent, CardMedia, Tooltip, Typography } from "@mui/material";
 import { DataGrid, GridColDef, GridToolbar } from '@mui/x-data-grid';
 import { GiftRequestFormDialogController, GiftRequestFormDialog } from "../FormDialog/GiftRequestFormDialog";
 import { GiftRequestDTO } from "../../types";
+import { useIsMobile } from "../../utils/useIsMobile";
 
 registerComponent('gift-request-list', (element, parameters) => {
     const [giftRequests, addGiftRequestUrl] = parameters;
     const controller = new GiftRequestListController(giftRequests, addGiftRequestUrl);
-    ReactDOMClient.createRoot(element).render(<GiftRequestList controller={controller}/>);
+    renderWithTheme(element, <GiftRequestList controller={controller}/>);
 });
 
 type GiftRequestLineItem = {
@@ -86,6 +86,8 @@ const GiftRequestList : React.FC<{
     controller: GiftRequestListController
 }> = observer(({controller}) => {
 
+    const isMobile = useIsMobile();
+
     const giftRequestCreateDialogController = new GiftRequestFormDialogController(
         (result) => {controller.addGiftRequest(result)},
         () => {},
@@ -143,12 +145,43 @@ const GiftRequestList : React.FC<{
         }}
     >
         <GiftRequestFormDialog controller={giftRequestCreateDialogController} />
-        <DataGrid
-            rows={controller.lineItems.map(li => li.giftRequest)}
-            columns={columns}
-            getRowId={(row) =>  row.id}
-            slots={{ toolbar: GridToolbar }}
-        />
+        {isMobile ? (
+            <Box
+                sx={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+                    gap: 2,
+                }}
+            >
+                {controller.lineItems.map(li => (
+                    <Card key={li.giftRequest.id} sx={{ display: 'flex', flexDirection: 'column' }}>
+                        {li.giftRequest.imagePath && (
+                            <CardMedia
+                                component="img"
+                                height="140"
+                                image={`/uploads/${li.giftRequest.imagePath}`}
+                                alt={li.giftRequest.name}
+                                sx={{ objectFit: 'cover' }}
+                            />
+                        )}
+                        <CardContent sx={{ flexGrow: 1 }}>
+                            <Typography variant="h6">{li.giftRequest.name}</Typography>
+                            <Typography variant="body2" color="text.secondary">{li.giftRequest.description}</Typography>
+                        </CardContent>
+                        <Box sx={{ padding: 2, paddingTop: 0 }}>
+                            <GiftRequestEditCell listController={controller} giftRequest={li.giftRequest} />
+                        </Box>
+                    </Card>
+                ))}
+            </Box>
+        ) : (
+            <DataGrid
+                rows={controller.lineItems.map(li => li.giftRequest)}
+                columns={columns}
+                getRowId={(row) =>  row.id}
+                slots={{ toolbar: GridToolbar }}
+            />
+        )}
     </Box>;
 });
 

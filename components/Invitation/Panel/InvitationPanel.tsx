@@ -1,18 +1,18 @@
 import * as React from 'react';
-import * as ReactDOMClient from 'react-dom/client';
-import { registerComponent } from '../../component.loader';
+import { registerComponent, renderWithTheme } from '../../component.loader';
 import { observer } from "mobx-react";
 import { InvitationDialogController, InviteDialog } from '../Dialog/InvitationDialog';
 import { makeObservable, observable } from 'mobx';
 import { InvitationListItemDTO, InvitationPanelConfig } from '../../types';
 import { DataGrid, GridColDef, GridColumnVisibilityModel, GridDensity, GridToolbar } from '@mui/x-data-grid';
 import { BooleanChip } from '../../BooleanChip/BooleanChip';
-import { Button } from '@mui/material';
+import { Box, Button, Card, CardContent, Typography } from '@mui/material';
+import { useIsMobile } from '../../utils/useIsMobile';
 
 registerComponent('invitation-panel', (element, parameters) => {  
     const [ config ] = parameters;
     const controller = new InvitationPanelController(config);
-    ReactDOMClient.createRoot(element).render(<InvitationPanel controller={controller} />)
+    renderWithTheme(element, <InvitationPanel controller={controller} />)
 });
 
 class InvitationPanelController {
@@ -35,7 +35,19 @@ const InvitationPanel: React.FC<{controller: InvitationPanelController}> = obser
     // });
     
     const invitationList = controller.invitationList;
-    
+    const isMobile = useIsMobile();
+
+    const copyCode = (code: string) => {
+        if (document.hasFocus()) {
+            navigator.clipboard.writeText(code);
+        } else {
+            window.focus();
+            setTimeout(() => {
+                navigator.clipboard.writeText(code);
+            }, 100);
+        }
+    };
+
     const columns: GridColDef[] = [
         { field: 'email', headerName: 'Email', flex: 1 },
         { field: 'code', headerName: 'Code', flex: 2 },
@@ -51,16 +63,7 @@ const InvitationPanel: React.FC<{controller: InvitationPanelController}> = obser
     // };
 
     columns[2].renderCell = (params) => {
-        return <Button onClick={() => {
-            if (document.hasFocus()) {
-                navigator.clipboard.writeText(params.row.code);
-            } else {
-                window.focus();
-                setTimeout(() => {
-                    navigator.clipboard.writeText(params.row.code);
-                }, 100);
-            }
-        }}>Copy Code</Button>
+        return <Button onClick={() => copyCode(params.row.code)}>Copy Code</Button>
     };
 
     return <>
@@ -69,15 +72,29 @@ const InvitationPanel: React.FC<{controller: InvitationPanelController}> = obser
             <InviteDialog controller={new InvitationDialogController(controller.config.createInvitationUrl)} />
         </div>
         {invitationList.length === 0 && <p>No invitations have been currently placed.</p>}
-        {invitationList.length > 0 && <DataGrid
-            rows = {controller.invitationList}
-            columns={columns}
-            getRowId={(row) => row.id}
-            // columnVisibilityModel={columnVisibilityModel}
-            // onColumnVisibilityModelChange={(newModel) => setColumnVisibilityModel(newModel)}
-            initialState={{
-                density: 'compact' as GridDensity,
-            }}
-        />}
+        {invitationList.length > 0 && (isMobile ? (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                {invitationList.map(invitation => (
+                    <Card key={invitation.id}>
+                        <CardContent>
+                            <Typography variant="body1">{invitation.email}</Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ wordBreak: 'break-all' }}>{invitation.code}</Typography>
+                            <Button onClick={() => copyCode(invitation.code)}>Copy Code</Button>
+                        </CardContent>
+                    </Card>
+                ))}
+            </Box>
+        ) : (
+            <DataGrid
+                rows = {controller.invitationList}
+                columns={columns}
+                getRowId={(row) => row.id}
+                // columnVisibilityModel={columnVisibilityModel}
+                // onColumnVisibilityModelChange={(newModel) => setColumnVisibilityModel(newModel)}
+                initialState={{
+                    density: 'compact' as GridDensity,
+                }}
+            />
+        ))}
     </>
 });

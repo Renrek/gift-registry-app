@@ -5,6 +5,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Box } from '
 import axios from 'axios';
 import { GiftSelectionPanelItemDTO } from '../../types';
 import Notification from '../../utils/notification';
+import { useIsMobile } from '../../utils/useIsMobile';
 
 export class GiftDetailDialogController {
 
@@ -48,6 +49,7 @@ export class GiftDetailDialogController {
 export const GiftDetailDialog: React.FC<{ 
     controller: GiftDetailDialogController 
 }> = observer(({ controller }) => {
+    const isMobile = useIsMobile();
     return (
         <Dialog
             open={controller.isOpen && !!controller.gift}
@@ -55,6 +57,7 @@ export const GiftDetailDialog: React.FC<{
             disableEnforceFocus
             maxWidth="sm"
             fullWidth
+            fullScreen={isMobile}
             PaperProps={{ component: 'div' }}
         >
             {controller.gift && (

@@ -1,8 +1,7 @@
 import * as React from 'react';
-import * as ReactDOMClient from 'react-dom/client';
 import './AuthLoginForm.scss';
 import { observer } from 'mobx-react';
-import { registerComponent } from '../../../component.loader';
+import { registerComponent, renderWithTheme } from '../../../component.loader';
 import { Box, Button, FormControl, IconButton, Input, InputAdornment, InputLabel } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { action, makeObservable, observable } from 'mobx';
@@ -12,7 +11,7 @@ registerComponent('login-form', (element, parameters) => {
     const [ loggedIn ] = parameters;
     
     const controller = new AuthLoginFormController(loggedIn);
-    ReactDOMClient.createRoot(element).render(<AuthLoginForm controller={controller} />)
+    renderWithTheme(element, <AuthLoginForm controller={controller} />)
 });
 
 class AuthLoginFormController {
