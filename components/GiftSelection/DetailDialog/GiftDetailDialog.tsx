@@ -58,7 +58,7 @@ export const GiftDetailDialog: React.FC<{
             maxWidth="sm"
             fullWidth
             fullScreen={isMobile}
-            PaperProps={{ component: 'div' }}
+            slotProps={{ paper: { component: 'div' } }}
         >
             {controller.gift && (
                 <>

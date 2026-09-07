@@ -167,7 +167,7 @@ export const GiftRequestFormDialog: React.FC<{
                 open={controller.isOpen}
                 onClose={controller.toggleDialog}
                 disableEnforceFocus
-                PaperProps={{ component: 'div' }}
+                slotProps={{ paper: { component: 'div' } }}
             >
                 <DialogTitle>{title}</DialogTitle>
                 <DialogContent>

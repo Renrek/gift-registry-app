@@ -47,6 +47,7 @@ module.exports = (env) => {
         output: {
             filename: isProduction ? "[name].[contenthash].js" : "[name].js",
             path: path.resolve(__dirname, "public/assets"),
+            publicPath: "/assets/",
             clean: true,
         },
         //optimization: isProduction ? { minimizer: [new OptimizeCssAssetsPlugin]} // optimize-css-assets-webpack-plugin
@@ -80,8 +81,11 @@ module.exports = (env) => {
                             loader: "sass-loader",
                             options: {
                                 implementation: require("sass"),
+                                // Bootstrap's own SCSS still uses legacy @import/color syntax;
+                                // quietDeps silences deprecation noise coming from node_modules.
                                 sassOptions: {
-                                    fiber: false,
+                                    quietDeps: true,
+                                    silenceDeprecations: ['import', 'global-builtin', 'color-functions'],
                                 },
                             },
                         },
@@ -105,9 +109,19 @@ module.exports = (env) => {
         },
         devServer:{
             hot: true,
-            proxy: {
-                '*':'http://localhost:80'
-            }
+            host: '0.0.0.0',
+            port: 8080,
+            allowedHosts: 'all',
+            client: {
+                overlay: true,
+            },
+            // Assets are served from memory by this dev server; everything else (pages, API) is proxied to nginx.
+            proxy: [
+                {
+                    context: ['**'],
+                    target: 'http://nginx:80',
+                },
+            ],
         }
     }
 }

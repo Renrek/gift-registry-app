@@ -50,7 +50,7 @@ export const InviteDialog : React.FC<{controller: InvitationDialogController}> =
     <Dialog
         open={controller.isOpen}
         onClose={controller.toggleDialog}
-        PaperProps={{component: 'div'}}
+        slotProps={{ paper: { component: 'div' } }}
     >
       <DialogTitle>Create Invitation</DialogTitle>
       <DialogContent>

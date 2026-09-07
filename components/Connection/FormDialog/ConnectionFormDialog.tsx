@@ -75,7 +75,7 @@ export const ConnectionFormDialog: React.FC<{
             <Dialog
                 open={controller.isOpen}
                 onClose={controller.toggleDialog}
-                PaperProps={{ component: 'div' }}
+                slotProps={{ paper: { component: 'div' } }}
             >
                 <DialogTitle>Add Connection</DialogTitle>
                 <DialogContent>

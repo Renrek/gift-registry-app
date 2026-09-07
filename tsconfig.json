@@ -8,8 +8,9 @@
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "Node16",
-    "useDefineForClassFields": true,
+    "useDefineForClassFields": false,
     "experimentalDecorators": true,
+    "skipLibCheck": true,
   },
   "exclude": [
     "./vendor",
