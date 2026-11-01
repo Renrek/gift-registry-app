@@ -3,7 +3,7 @@ import { registerComponent, renderWithTheme } from '../../component.loader';
 import { action, makeObservable, observable, runInAction } from 'mobx';
 import { ConfirmStatus, ConnectionPanelConfig, ConnectionPanelItemDTO } from '../../types';
 import { DataGrid, GridColDef, GridDensity, GridToolbar } from '@mui/x-data-grid';
-import { Box, Button, Card, CardContent, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, Chip, Typography } from '@mui/material';
 import { ConnectionFormDialog, ConnectionFormDialogController } from '../FormDialog/ConnectionFormDialog';
 import axios from 'axios';
 import Notification from '../../utils/notification';
@@ -56,15 +56,16 @@ const ConnectionPanel: React.FC<{controller: ConnectionPanelController}> = ({
 
     const isMobile = useIsMobile();
 
-    const renderManageAction = (row: ConnectionPanelItemDTO) => {
+    const renderManageAction = (row: ConnectionPanelItemDTO, fullWidth = false) => {
         if (row.status === ConfirmStatus.CONFIRMED) {
-            return <Button href={row.viewUrl} >View</Button>
+            return <Button variant={fullWidth ? 'contained' : 'text'} fullWidth={fullWidth} href={row.viewUrl} >View</Button>
         } else if (row.status === ConfirmStatus.PENDING) {
-            return <p>Pending</p>
+            return <Chip label="Pending" size="small" />
         } else {
             return <Button 
-                variant="outlined"
-                size="small" 
+                variant={fullWidth ? 'contained' : 'outlined'}
+                fullWidth={fullWidth}
+                size={fullWidth ? 'medium' : 'small'}
                 color="primary"
                 onClick={() => { controller.addConnection(row.confirmUrl, row.id) } }
             >
@@ -91,9 +92,9 @@ const ConnectionPanel: React.FC<{controller: ConnectionPanelController}> = ({
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 {controller.connectedUsers.map(user => (
                     <Card key={user.id}>
-                        <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
-                            <Typography variant="body1">{user.email}</Typography>
-                            {renderManageAction(user)}
+                        <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, '&:last-child': { paddingBottom: 2 } }}>
+                            <Typography variant="body1" sx={{ wordBreak: 'break-word' }}>{user.email}</Typography>
+                            {renderManageAction(user, true)}
                         </CardContent>
                     </Card>
                 ))}
