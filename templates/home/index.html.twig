@@ -4,12 +4,7 @@
         <h2>Home Page</h2>
             
         <div class="home-sections">
-            <div style="margin-bottom: 2em;">
-                {{ loadComponent('connection-panel', [connectionConfig]) }}
-            </div>
-            <div>
-                {{ loadComponent('invitation-panel', [invitationConfig]) }}
-            </div>
+            {{ loadComponent('connection-panel', [connectionConfig]) }}
         </div>
     </div>
 {% endblock body %}

@@ -5,10 +5,7 @@ namespace App\Controller\Web\Home;
 use App\Entity\User;
 use App\Feature\ConnectionPanel\DTO\ConnectionPanelConfig;
 use App\Feature\ConnectionPanel\Formatter\ConnectionPanelFormatter;
-use App\Feature\InvitationPanel\DTOs\InvitationPanelConfig;
-use App\Formatter\Invitation\InvitationFormatter;
 use App\Repository\ConnectionRepository;
-use App\Repository\InvitationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -20,8 +17,6 @@ class HomeController extends AbstractController
     #[Route(path:'', methods: 'GET', name: 'home')]
     public function index(
         #[CurrentUser()] ?User $user,
-        InvitationFormatter $invitationFormatter,
-        InvitationRepository $invitationRepository,
         ConnectionRepository $connectionRepository,
         ConnectionPanelFormatter $connectionPanelFormatter,
     ): Response
@@ -39,18 +34,6 @@ class HomeController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        $invitations = $invitationRepository->findBy([
-            'inviter' => $user->getId(),
-            'used' => false,
-        ]);
-        
-        $invitationList = $invitationFormatter->forInvitationPanel($invitations);
-
-        $invitationConfig = new InvitationPanelConfig(
-            createInvitationUrl: $this->generateUrl('api_v1_create_invitation'),
-            invitationList: $invitationList,
-        );
-
         $connections = $connectionRepository->findByUser($user);
 
         $connectionConfig = new ConnectionPanelConfig(
@@ -59,8 +42,7 @@ class HomeController extends AbstractController
             connectedUsers: $connectionPanelFormatter->forContactsPanel($connections),
         );
         
-        return $this->render('home/index.html.twig', [ 
-            'invitationConfig' => $invitationConfig,
+        return $this->render('home/index.html.twig', [
             'connectionConfig' => $connectionConfig,
         ]);
     }

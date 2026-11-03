@@ -40,6 +40,14 @@ html body {
     }
 }
 
+.profile-page {
+    padding: 2em;
+
+    @media (max-width: 599px) {
+        padding: 0.75em;
+    }
+}
+
 .notification {
     padding: 10px;
     margin: 10px 0;
